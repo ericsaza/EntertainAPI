@@ -25,3 +25,12 @@ router.add_api_route(
     description="Ver los últimos animes añadidos en AnimeFLV.",
     name="Últimos animes",
 )
+
+# Endpoint para obtener el directorio de animes
+router.add_api_route(
+    path="/directorio-animes",
+    endpoint=animeflv_api.ver_directorio_animes,
+    methods=["GET"],
+    description="Ver el directorio de animes en AnimeFLV.",
+    name="Directorio de animes",
+)
