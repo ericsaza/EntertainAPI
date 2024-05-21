@@ -13,7 +13,7 @@ router.add_api_route(
     path="/",
     endpoint=myanimelist_api.info_endpoint,
     methods=["GET"],
-    description="Ver la información de la API de MyAnimeList.",
+    description="View MyAnimeList API information.",
     name="Info",
     include_in_schema=False,
 )
@@ -23,6 +23,6 @@ router.add_api_route(
     path="/top-animes",
     endpoint=myanimelist_api.top_animes,
     methods=["GET"],
-    description="Ver el top de animes en MyAnimeList.",
+    description="See the top animes on MyAnimeList.",
     name="Top animes",
 )

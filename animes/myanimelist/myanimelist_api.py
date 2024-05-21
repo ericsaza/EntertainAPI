@@ -18,8 +18,8 @@ class MyAnimeListAPI:
     # Endpoint para ver la información de la API de MyAnimeList
     def info_endpoint(self):
         return {
-            "message": "Endpoint para ver la información de la API de MyAnimeList.",
-            "description": "Este endpoint te mostrará la información de la API de MyAnimeList, incluyendo los endpoints disponibles, la documentación de la API y el código de respuesta.",
+            "message": "Endpoint to view MyAnimeList API information.",
+            "description": "This endpoint will show you MyAnimeList API information, including available endpoints, API documentation, and response code.",
             "endpoints": {
                 "top_animes": "/api/anime/myanimelist/top-animes?pagina=1&top=all"
             },
