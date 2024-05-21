@@ -65,12 +65,12 @@ class AnimeflvAPI:
             rating = anime.find("span", {"class": "Vts fa-star"}).text
             
             # Agregamos los datos a la lista
-            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "view_info": info_anime, "type": anime_type, "url_api": url_api, "puntuacion": rating})
+            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "view_info": info_anime, "type": anime_type, "url_api": url_api, "score": rating})
         
         return {"message": "Últimos animes añadidos", "data": lista_animes, "code": 200}
     
     def ver_directorio_animes(self,
-        pagina: int = Query(1, description="Número de la página que deseas ver."),
+        pagina: int = Query(..., example=1, description="Número de la página que deseas ver."),
         tipo: TipoAnime = Query(None, description="Tipo de anime para filtrar los resultados (TV = tv , OVA = ova, Película = movie, Especial = special)."),
         orden: TipoOrden = Query(TipoOrden.defecto, description="Criterio de ordenación de los resultados (defecto = default, recientemente actualizado = updated, recientemente agregado = added, nombre = title, calificación = rating)."),
         estado: EstadoAnime = Query(None, description="Estado del anime para filtrar los resultados (emisión = 1, finalizado = 2, próximamente = 3).")
@@ -92,7 +92,7 @@ class AnimeflvAPI:
             rating = anime.find("span", {"class": "Vts fa-star"}).text
 
             # Agregamos los datos a la lista
-            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "url_api": url_api, "puntuacion": rating})
+            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "url_api": url_api, "score": rating})
         
         return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}], "code": 200}
 
@@ -147,6 +147,7 @@ class AnimeflvAPI:
             except:
                 relacionados = []
             
-            return {"message": "Endpoint para ver la info de un anime en específico", "data": {"title": titulo, "image_src": image, "alternative names": nombres_alternativos, "sinopsis": sinopsis, "genres": generos, "relations": relacionados, "puntuacion": rating}, "code": 200}
+            return {"message": "Endpoint para ver la info de un anime en específico", 
+                    "data": {"title": titulo, "image_src": image, "alternative names": nombres_alternativos, "sinopsis": sinopsis, "genres": generos, "relations": relacionados, "score": rating}, "code": 200}
         else:
             return {"message": "Anime no encontrado.", "type": "Validation error.", "code": 422}
