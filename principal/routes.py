@@ -9,5 +9,5 @@ router = APIRouter()
 api = PrincipalAPI()
 
 router.add_api_route(
-    path="/", endpoint=api.hola_mundo, methods=["GET"]
+    path="/", endpoint=api.hola_mundo, methods=["GET"], description="Ruta principal de la API.", name="Principal", include_in_schema=False
 )

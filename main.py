@@ -1,6 +1,7 @@
 # Importamos lo necesario para la API
 from fastapi import FastAPI
 from principal.routes import router as principal_router
+from animes.animeflv.routes import router as animeflv_router
 import uvicorn
 
 # Creamos la instancia de la API
@@ -12,6 +13,12 @@ app = FastAPI(
 
 # Añadimos los routers de la API
 app.include_router(principal_router, prefix="/api", tags=["Principal"])
+app.include_router(animeflv_router, prefix="/api/anime/animeflv", tags=["Anime/AnimeFLV"])
+
+# Añadimos un endpoint para decir que la API está en "/api"
+@app.get("/", include_in_schema=False)
+async def root():
+    return {"message": "Para ir a la api tienes que ir al endpoint de abajo.", "api" : "/api", "code": 200}
 
 # Iniciamos la API
 if __name__ == "__main__":
