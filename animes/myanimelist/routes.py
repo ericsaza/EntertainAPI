@@ -25,4 +25,14 @@ router.add_api_route(
     methods=["GET"],
     description="See the top animes on MyAnimeList.",
     name="Top animes",
+    
+)
+
+# Endpoint para ver los animes de temporada
+router.add_api_route(
+    path="/seasonal-animes",
+    endpoint=myanimelist_api.seasonal_animes,
+    methods=["GET"],
+    description="See seasonal anime on MyAnimeList.",
+    name="Animes de temporada",
 )

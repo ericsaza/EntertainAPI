@@ -1,8 +1,9 @@
 from enum import Enum
 from fastapi import Query
-from scrapper.utils import obtener_contenido_url
+from utils.scrap_utils import obtener_contenido_url
 
 
+# Enum de tipos de tops
 class TopTypes(str, Enum):
     top_all = "all"
     top_airing = "airing"
@@ -11,6 +12,24 @@ class TopTypes(str, Enum):
     top_popular = "bypopularity"
     top_favorite = "favorite"
     top_movies = "movie"
+
+
+# Enum de tipos de temporadas
+class SeasonTypes(str, Enum):
+    winter = "winter"
+    spring = "spring"
+    summer = "summer"
+    fall = "fall"
+
+
+# Enum tipo de animes
+class SeasonalAnimeTypes(str, Enum):
+    new = "new"
+    continuing = "continuing"
+    onas = "onas"
+    ovas = "ovas"
+    movies = "movies"
+    specials = "specials"
 
 
 class MyAnimeListAPI:
@@ -33,19 +52,19 @@ class MyAnimeListAPI:
     # Endpoint para obtener el top de animes
     def top_animes(
         self,
-        pagina: int = Query(
-            ..., example=1, description="Número de la página que deseas ver."
+        page: int = Query(
+            ..., example=1, description="Number of the page you want to see."
         ),
         top: TopTypes = Query(
-            ..., example=TopTypes.top_all, description="Que top deseas ver."
+            ..., example=TopTypes.top_all, description="Type of top anime."
         ),
     ):
         # Entramos a la página donde scrapearemos la información
         soup = obtener_contenido_url(
-            f"https://myanimelist.net/topanime.php?type={top.value}&limit={50 * (pagina - 1)}"
+            f"https://myanimelist.net/topanime.php?type={top.value}&limit={50 * (page - 1)}"
         )
 
-        # Buscamos todos los animes
+        # Buscamos la información de los animes
         lista_animes = []
         for anime in soup.find_all("tr", {"class": "ranking-list"}):
             position = anime.find("td", {"class": "rank"}).find("span").text
@@ -106,12 +125,67 @@ class MyAnimeListAPI:
             "pagination": [
                 {
                     "prev_page": (
-                        f"/api/anime/myanimelist/top-animes?pagina={pagina - 1}"
-                        if pagina > 1
+                        f"/api/anime/myanimelist/top-animes?pagina={page - 1}"
+                        if page > 1
                         else None
                     )
                 },
-                {"next_page": f"/api/anime/myanimelist/top-animes?pagina={pagina + 1}"},
+                {"next_page": f"/api/anime/myanimelist/top-animes?pagina={page + 1}"},
             ],
+            "code": 200,
+        }
+
+    def seasonal_animes(
+        self,
+        year: int = Query(..., example=2024, description="Year of the season."),
+        season: SeasonTypes = Query(
+            ..., example=SeasonTypes.spring, description="Season of the year."
+        ),
+        anime_type: SeasonalAnimeTypes = Query(
+            ..., example=SeasonalAnimeTypes.new, description="Type of anime."
+        ),
+    ):
+        # Entramos a la página donde scrapearemos la información
+        soup = obtener_contenido_url(
+            f"https://myanimelist.net/anime/season/{year}/{season.value}"
+        )
+        index = 0
+        if anime_type.value == "new":
+            index = 0
+        elif anime_type.value == "continuing":
+            index = 1
+        elif anime_type.value == "onas":
+            index = 2
+        elif anime_type.value == "ovas":
+            index = 3
+        elif anime_type.value == "movies":
+            index = 4
+        elif anime_type.value == "specials":
+            index = 5
+
+        # Obtenemos la información de los animes de temporada
+        # empeza por new
+        new = soup.find_all("div", {"class": "seasonal-anime-list"})[index]
+        animes = []
+        for anime in new.find_all("div", {"class": "seasonal-anime"}):
+            myanimelist_id = anime.find("h2", {"class": "h2_anime_title"}).find("a")["href"].split("/")[4]
+            title = anime.find("h2", {"class": "h2_anime_title"}).find("a").text
+            image_src = anime.find("div", {"class": "image"}).find("img").get('src')
+            myanimelist_url = anime.find("h2", {"class": "h2_anime_title"}).find("a")["href"]
+            score = anime.find("div", {"class": "score"}).get_text(strip=True)
+            sinposis = anime.find("p", {"class": "preline"}).get_text(strip=True)
+            studio = anime.find_all("div", {"class": "property"})[0].find("span", {"class", "item"}).text
+            source = anime.find_all("div", {"class": "property"})[1].find("span", {"class", "item"}).text
+            
+            # Añadimos los géneros
+            genres = []
+            for genre in anime.find_all("span", {"class": "genre"}):
+                genres.append(genre.get_text(strip=True))
+
+            animes.append({"mal_id": myanimelist_id, "title": title, "image_src": image_src, "sinopsis": sinposis, "genres": genres, "studio": studio, "source": source, "url_mal": myanimelist_url, "score": score})
+
+        return {
+            "message": f"Animes of the season {season.value} of {year}",
+            "data": animes,
             "code": 200,
         }

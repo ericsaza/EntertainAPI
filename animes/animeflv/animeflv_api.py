@@ -2,7 +2,7 @@ from enum import Enum
 from bs4 import BeautifulSoup
 from fastapi import Query
 import requests
-from scrapper.utils import obtener_contenido_url
+from utils.scrap_utils import obtener_contenido_url
 
 # Enum de tipos de animes
 class TipoAnime(str, Enum):
