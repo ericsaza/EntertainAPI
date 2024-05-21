@@ -87,8 +87,8 @@ class MyAnimeListAPI:
                     "image_src": image_src,
                     "num_episodes": num_episodes,
                     "dates": {
-                        "airing date": airing_date,
-                        "finalization date": (
+                        "airing_date": airing_date,
+                        "finalization_date": (
                             None
                             if "members" in finalization_date
                             else finalization_date

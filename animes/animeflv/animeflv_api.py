@@ -163,6 +163,6 @@ class AnimeflvAPI:
                 relacionados = []
             
             return {"message": "Endpoint para ver la info de un anime en específico", 
-                    "data": {"title": titulo, "image_src": image, "alternative names": nombres_alternativos, "sinopsis": sinopsis, "genres": generos, "relations": relacionados, "score": rating}, "code": 200}
+                    "data": {"title": titulo, "image_src": image, "alternative_names": nombres_alternativos, "sinopsis": sinopsis, "genres": generos, "relations": relacionados, "score": rating}, "code": 200}
         else:
             return {"message": "Anime no encontrado.", "type": "Validation error.", "code": 422}
