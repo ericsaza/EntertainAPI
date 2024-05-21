@@ -9,5 +9,9 @@ router = APIRouter()
 animeflv_api = AnimeflvAPI()
 
 router.add_api_route(
-    path="/", endpoint=animeflv_api.hola_mundo, methods=["GET"], description="API de animeflv", name="Animeflv"
+    path="/",
+    endpoint=animeflv_api.episodios_recientes,
+    methods=["GET"],
+    description="Ver los útimos episodios agregados en AnimeFLV.",
+    name="Episodios recientes",
 )
