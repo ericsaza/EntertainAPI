@@ -2,6 +2,7 @@ from enum import Enum
 from fastapi import Query
 from scrapper.utils import obtener_contenido_url
 
+
 class TopTypes(str, Enum):
     top_all = "all"
     top_airing = "airing"
@@ -11,7 +12,25 @@ class TopTypes(str, Enum):
     top_favorite = "favorite"
     top_movies = "movie"
 
+
 class MyAnimeListAPI:
+
+    # Endpoint para ver la información de la API de MyAnimeList
+    def info_endpoint(self):
+        return {
+            "message": "Endpoint para ver la información de la API de MyAnimeList.",
+            "description": "Este endpoint te mostrará la información de la API de MyAnimeList, incluyendo los endpoints disponibles, la documentación de la API y el código de respuesta.",
+            "endpoints": {
+                "top_animes": "/api/anime/myanimelist/top-animes?pagina=1&top=all"
+            },
+            "other_anime_endpoints": {
+                "AnimeFLV": "/api/anime/animeflv",
+            },
+            "documentation": {"swagger": "/docs", "doc": "/redoc"},
+            "code": 200,
+        }
+
+    # Endpoint para obtener el top de animes
     def top_animes(
         self,
         pagina: int = Query(
@@ -25,7 +44,7 @@ class MyAnimeListAPI:
         soup = obtener_contenido_url(
             f"https://myanimelist.net/topanime.php?type={top.value}&limit={50 * (pagina - 1)}"
         )
-        
+
         # Buscamos todos los animes
         lista_animes = []
         for anime in soup.find_all("tr", {"class": "ranking-list"}):
@@ -77,7 +96,7 @@ class MyAnimeListAPI:
                     },  # Controlo que si lo que recibe no es una fecha de null
                     "type": type,
                     "url_mal": url_myanimelist,
-                    "score": score
+                    "score": score,
                 }
             )
 

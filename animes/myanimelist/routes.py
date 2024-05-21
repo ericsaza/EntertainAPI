@@ -8,6 +8,16 @@ router = APIRouter()
 # Instanciamos la clase PrincipalAPI
 myanimelist_api = MyAnimeListAPI()
 
+# Endpoint para ver la información de la API
+router.add_api_route(
+    path="/",
+    endpoint=myanimelist_api.info_endpoint,
+    methods=["GET"],
+    description="Ver la información de la API de MyAnimeList.",
+    name="Info",
+    include_in_schema=False,
+)
+
 # Endpoint para obtener el top de animes
 router.add_api_route(
     path="/top-animes",

@@ -8,6 +8,16 @@ router = APIRouter()
 # Instanciamos la clase PrincipalAPI
 animeflv_api = AnimeflvAPI()
 
+# Endpoint para ver la información de la API
+router.add_api_route(
+    path="/",
+    endpoint=animeflv_api.info_endpoint,
+    methods=["GET"],
+    description="Ver la información de la API de AnimeFLV.",
+    name="Info",
+    include_in_schema=False,
+)
+
 # Endpoint para obtener los últimos episodios de animes
 router.add_api_route(
     path="/episodios-recientes",

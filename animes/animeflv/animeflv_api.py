@@ -26,10 +26,25 @@ class EstadoAnime(int, Enum):
 
 class AnimeflvAPI:
     
+    def info_endpoint(self):
+        return {
+            "message": "Endpoint para ver la información de la API de AnimeFLV.",
+            "description": "Este endpoint te mostrará la información de la API de AnimeFLV, incluyendo los endpoints disponibles, la documentación de la API y el código de respuesta.",
+            "endpoints": { 
+                        "episodios_recientes": "/api/anime/animeflv/episodios-recientes",
+                        "ultimos_animes": "/api/anime/animeflv/ultimos-animes",
+                        "directorio_animes": "/api/anime/animeflv/directorio-animes",
+                        "buscar_anime": "/api/anime/animeflv/buscar-anime?anime_a_buscar=sword%20art%20online",
+                    },
+            "other_anime_endpoints": {
+                "MyAnimeList": "/api/anime/myanimelist",
+            },
+            "documentation": {"swagger": "/docs", "doc": "/redoc"},
+            "code": 200,
+        }
+    
     # Endpoint para ver los últimos episodios de animes
     def episodios_recientes(self):
-        
-        # Entramos a la página donde scrapearemos la información
 
         # Parsea el contenido HTML de la página
         soup = obtener_contenido_url(f"https://www3.animeflv.net")
