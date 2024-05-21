@@ -61,7 +61,7 @@ class AnimeflvAPI:
             sinopsis = anime.find_all("p")[1].text
             info_anime = f'https://www3.animeflv.net{anime.find_all("a")[1]["href"]}'
             anime_type = anime.find("span", {"class": "Type"}).text
-            url_api = anime.find_all("a")[1]["href"].replace("/anime/", "/buscar_anime?anime_a_buscar=")
+            url_api = anime.find_all("a")[1]["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
             rating = anime.find("span", {"class": "Vts fa-star"}).text
             
             # Agregamos los datos a la lista
@@ -88,13 +88,13 @@ class AnimeflvAPI:
             image = anime.find("img")["src"]
             sinopsis = anime.find_all("p")[1].text
             anime_type = anime.find("span", {"class": "Type"}).text
-            url_api = anime.find("a")["href"].replace("/anime/", "/buscar_anime?anime_a_buscar=")
+            url_api = anime.find("a")["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
             rating = anime.find("span", {"class": "Vts fa-star"}).text
 
             # Agregamos los datos a la lista
             lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "url_api": url_api, "puntuacion": rating})
         
-        return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/directorio-animes?pagina={pagina + 1}"}], "code": 200}
+        return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}], "code": 200}
 
     # Endpoint para ver la info de un anime en específico
     def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime a buscar.", example="Naruto")):
@@ -142,7 +142,7 @@ class AnimeflvAPI:
                 for relacionado in html_relacionados.find_all("li"):
                     titulo_relacionado = relacionado.find("a").text
                     tipo = relacionado.text.split("(")[1].replace(")", "").strip()
-                    url_relacionado = relacionado.find("a")["href"].replace("/anime/", "/buscar_anime?anime_a_buscar=")
+                    url_relacionado = relacionado.find("a")["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
                     relacionados.append({"title": titulo_relacionado, "type": tipo, "url": url_relacionado})
             except:
                 relacionados = []
