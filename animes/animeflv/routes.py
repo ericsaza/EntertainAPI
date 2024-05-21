@@ -34,3 +34,12 @@ router.add_api_route(
     description="Ver el directorio de animes en AnimeFLV.",
     name="Directorio de animes",
 )
+
+# Endpoint para buscar un anime por su nombre
+router.add_api_route(
+    path="/buscar-anime",
+    endpoint=animeflv_api.buscar_anime,
+    methods=["GET"],
+    description="Buscar un anime por su nombre en AnimeFLV.",
+    name="Buscar anime",
+)
