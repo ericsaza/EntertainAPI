@@ -58,7 +58,7 @@ class AnimeflvAPI:
             image = f'https://www3.animeflv.net{anime.find("img")["src"]}'
 
             # Agregamos los datos a la lista
-            lista_animes.append({"name": titulo, "episode": episodio, "image_src": image, "url": url})
+            lista_animes.append({"title": titulo, "episode": episodio, "image_src": image, "url": url})
         
         return {"message": "Últimos episodios de animes", "data": lista_animes, "code": 200}
     
@@ -80,7 +80,7 @@ class AnimeflvAPI:
             rating = anime.find("span", {"class": "Vts fa-star"}).text
             
             # Agregamos los datos a la lista
-            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "view_info": info_anime, "type": anime_type, "url_api": url_api, "score": rating})
+            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": info_anime, "url_api": url_api})
         
         return {"message": "Últimos animes añadidos", "data": lista_animes, "code": 200}
     
@@ -112,7 +112,7 @@ class AnimeflvAPI:
         return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}], "code": 200}
 
     # Endpoint para ver la info de un anime en específico
-    def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime a buscar.", example="Naruto")):
+    def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime a buscar.", example="sword art online")):
         
         # Hacemos cambios necesarios para la búsqueda
         anime_a_buscar = anime_a_buscar.replace(" ", "-").lower().replace(",", "").replace(":", "").replace("!", "").replace("(", "").replace(")", "").replace("?", "").replace("¿", "").replace("¡", "").replace("@", "")

@@ -1,6 +1,7 @@
 # Importamos el router de la API
 from fastapi import APIRouter
 from animes.animeflv.animeflv_api import AnimeflvAPI
+from animes.animeflv.models.animeflv import EpisodiosRecientesResponse, UltimosAnimesResponse
 
 # Instanciamos un router
 router = APIRouter()
@@ -25,6 +26,7 @@ router.add_api_route(
     methods=["GET"],
     description="Ver los útimos episodios agregados en AnimeFLV.",
     name="Episodios recientes",
+    response_model=EpisodiosRecientesResponse,
 )
 
 # Endpoint para obtener los últimos animes añadidos
@@ -34,6 +36,7 @@ router.add_api_route(
     methods=["GET"],
     description="Ver los últimos animes añadidos en AnimeFLV.",
     name="Últimos animes",
+    response_model=UltimosAnimesResponse,
 )
 
 # Endpoint para obtener el directorio de animes
