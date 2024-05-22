@@ -107,11 +107,7 @@ class MyAnimeListAPI:
                     "num_episodes": num_episodes,
                     "dates": {
                         "start_date": start_date,
-                        "end_date": (
-                            None
-                            if "members" in end_date
-                            else end_date
-                        ),
+                        "end_date": (None if "members" in end_date else end_date),
                     },  # Controlo que si lo que recibe no es una fecha de null
                     "type": type,
                     "score": score,
@@ -120,7 +116,7 @@ class MyAnimeListAPI:
             )
 
         return {
-            "message": "Top 50 animes",
+            "message": "Emdpoint to see top 50 animes on MyAnimeList.",
             "data": lista_animes,
             "pagination": [
                 {
@@ -179,7 +175,7 @@ class MyAnimeListAPI:
                 "href"
             ]
             score = anime.find("div", {"class": "score"}).get_text(strip=True)
-            sinposis = anime.find("p", {"class": "preline"}).get_text(strip=True)
+            synopsis = anime.find("p", {"class": "preline"}).get_text(strip=True)
             studio = (
                 anime.find_all("div", {"class": "property"})[0]
                 .find("span", {"class", "item"})
@@ -201,17 +197,17 @@ class MyAnimeListAPI:
                     "mal_id": myanimelist_id,
                     "title": title,
                     "image_src": image_src,
-                    "sinopsis": sinposis,
                     "genres": genres,
                     "studio": studio,
                     "source": source,
+                    "synopsis": synopsis,
                     "score": score,
                     "url_mal": myanimelist_url,
                 }
             )
 
         return {
-            "message": f"Animes of the season {season.value} of {year}",
+            "message": f"Endpoint to see {anime_type.value} animes of {season.value} {year}",
             "data": animes,
             "code": 200,
         }
@@ -240,7 +236,7 @@ class MyAnimeListAPI:
         ).find_all("tr")[1:]:
             title = anime.find("strong").get_text(strip=True)
             image_src = anime.find("img")["data-src"]
-            sinonpsis = (
+            synopsis = (
                 anime.find("div", {"class": "pt4"})
                 .get_text(strip=True)
                 .replace("read more.", "")
@@ -276,9 +272,9 @@ class MyAnimeListAPI:
                 {
                     "title": title,
                     "image_src": image_src,
-                    "sinopsis": sinonpsis,
                     "type": type,
                     "num_episodes": episodes,
+                    "synopsis": synopsis,
                     "dates": {
                         "start_date": start_date,
                         "end_date": end_date,
@@ -289,7 +285,7 @@ class MyAnimeListAPI:
             )
 
         return {
-            "message": f"Animes found with the name {anime_name}",
+            "message": f"Endpoints to search anime by name",
             "data": lista_animes,
             "pagination": [
                 {
@@ -303,5 +299,111 @@ class MyAnimeListAPI:
                     "next_page": f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page + 1}"
                 },
             ],
+            "code": 200,
+        }
+
+    # Endpoint para ver la información de un anime
+    def informacion_anime(
+        self,
+        myanimelist_id: int = Query(
+            ..., example=21, description="MyAnimeList ID of the anime."
+        ),
+        anime_name: str = Query("One Piece", description="Name of the anime."),
+    ):
+        # Entramos a la página donde scrapearemos la información
+        soup = obtener_contenido_url(
+            f"https://myanimelist.net/anime/{myanimelist_id}/{anime_name.replace(' ', '_').replace(':', '').replace('!', '').replace('?', '')}"
+        )
+
+        # Obtenemos la información del anime
+        rank = (
+            soup.find("span", {"class": "numbers ranked"})
+            .find("strong")
+            .get_text(strip=True)
+            .replace("#", "")
+        )
+        popularity_rank = (
+            soup.find("span", {"class": "numbers popularity"})
+            .find("strong")
+            .get_text(strip=True)
+            .replace("#", "")
+        )
+        title = soup.find("h1", {"class": "title-name"}).text
+        image_src = soup.find("div", {"class": "leftside"}).find("img")["data-src"]
+        synopsis = soup.find("p", {"itemprop": "description"}).text
+        score = soup.find("div", {"class": "score-label"}).text
+        video_promo = soup.find("div", {"class": "video-promotion"}).find("a")["href"]
+        type = soup.find("h2", string="Information").find_next("div").find("a").text
+        episodes = soup.find("span", string="Episodes:").find_parent().get_text(strip=True).split(":")[1]
+        studio = soup.find("span", string="Studios:").find_parent().get_text(strip=True).split(":")[1]
+        source = soup.find("span", string="Source:").find_parent().get_text(strip=True).split(":")[1]
+        
+        # Dependiendo del anime puede tener un solo genero o varios asi que controlamos si es uno o varios
+        try:
+            genres = soup.find("span", string="Genre:").find_parent().get_text(strip=True, separator=" ").split(":")[1].split(" ")[1]
+        except Exception as e:
+            genres = soup.find("span", string="Genres:").find_parent().get_text(strip=True, separator=" ").split(":")[1].split(",")
+            
+            # Recorremos los generos y eliminamos los espacios
+            for i in range(len(genres)):
+                genres[i] = genres[i].split(" ")[1]
+        
+        # Controlamos si no hay tema
+        try:
+            theme = soup.find("span", string="Theme:").find_parent().get_text(strip=True, separator="-").split(":")[1].split("-")[1]
+        except Exception as e:
+            theme = None
+        demographic = soup.find("span", string="Demographic:").find_parent().get_text(strip=True, separator=" ").split(":")[1].split(" ")[1]
+
+        # Obtendremos los personajes principales y sus actores de voz
+        characters = []
+        for character in range(10):
+            character_name = (
+                soup.find_all("h3", {"class": "h3_characters_voice_actors"})[character]
+                .find("a")
+                .text
+            )
+            voice_actor = (
+                soup.find_all("td", {"class": "va-t ar pl4 pr4"})[len(characters)]
+                .find("a")
+                .text
+            )
+
+            characters.append(
+                {
+                    "character_name": character_name,
+                    "voice_actor": voice_actor,
+                }
+            )
+
+        # Añadimos al staff
+        staff = []
+        for staff_member in soup.find_all(
+            "div", {"class": "detail-characters-list clearfix"}
+        )[1].find_all("table"):
+            staff_name = staff_member.find_all("a")[1].text
+            staff_role = staff_member.find("small").text
+            staff.append({"staff_name": staff_name, "staff_role": staff_role})
+
+        return {
+            "message": f"Endpoint to see information about an anime",
+            "data": {
+                "rank_position": rank,
+                "popularity_rank_position": popularity_rank,
+                "title": title,
+                "image_src": image_src,
+                "num_episodes": episodes,
+                "video_promotion": video_promo,
+                "type": type,
+                "studio": studio,
+                "source": source,
+                "genres": genres,
+                "theme": theme,
+                "demographic": demographic,
+                "synopsis": synopsis,
+                "characters": characters,
+                "staff": staff,
+                "score": score,
+            },
             "code": 200,
         }

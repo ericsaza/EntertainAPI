@@ -45,3 +45,12 @@ router.add_api_route(
     description="Search an anime by its name on MyAnimeList.",
     name="Search anime",
 )
+
+# Endpoint para ver la información de un anime
+router.add_api_route(
+    path="/anime-info",
+    endpoint=myanimelist_api.informacion_anime,
+    methods=["GET"],
+    description="View information about an anime on MyAnimeList.",
+    name="Anime info",
+)
