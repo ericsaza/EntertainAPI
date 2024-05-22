@@ -40,7 +40,7 @@ class MyAnimeListAPI:
             "message": "Endpoint to view MyAnimeList API information.",
             "description": "This endpoint will show you MyAnimeList API information, including available endpoints, API documentation, and response code.",
             "endpoints": {
-                "top_animes": "/api/anime/myanimelist/top-animes?pagina=1&top=all"
+                "top_animes": "/api/anime/myanimelist/top-animes?page=1&top=all"
             },
             "other_anime_endpoints": {
                 "AnimeFLV": "/api/anime/animeflv",
@@ -79,12 +79,7 @@ class MyAnimeListAPI:
                 .text
             )
             image_src = anime.find("img")["data-src"]
-            num_episodes = (
-                anime.find("div", {"class": "information"})
-                .get_text(strip=True, separator=" ")
-                .split(" ")[1]
-                .replace("(", "")
-            )
+
             start_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[3]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[4]}'
             end_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
             type = (
@@ -96,22 +91,23 @@ class MyAnimeListAPI:
                 "h3", {"class": "fl-l fs14 fw-b anime_ranking_h3"}
             ).find("a")["href"]
             score = anime.find("td", {"class": "score"}).find("span").text
+            url_api = f"/api/anime/myanimelist/anime-info?myanimelist_id={myanimelist_id}&anime_name={title}"
 
             # Agregamos los datos a la lista
             lista_animes.append(
                 {
-                    "position": position,
-                    "mal_id": myanimelist_id,
+                    "position": int(position),
+                    "mal_id": int(myanimelist_id),
                     "title": title,
                     "image_src": image_src,
-                    "num_episodes": num_episodes,
                     "dates": {
                         "start_date": start_date,
                         "end_date": (None if "members" in end_date else end_date),
                     },  # Controlo que si lo que recibe no es una fecha de null
                     "type": type,
-                    "score": score,
+                    "score": float(score),
                     "url_mal": url_myanimelist,
+                    "url_api": url_api,
                 }
             )
 
@@ -334,26 +330,65 @@ class MyAnimeListAPI:
         score = soup.find("div", {"class": "score-label"}).text
         video_promo = soup.find("div", {"class": "video-promotion"}).find("a")["href"]
         type = soup.find("h2", string="Information").find_next("div").find("a").text
-        episodes = soup.find("span", string="Episodes:").find_parent().get_text(strip=True).split(":")[1]
-        studio = soup.find("span", string="Studios:").find_parent().get_text(strip=True).split(":")[1]
-        source = soup.find("span", string="Source:").find_parent().get_text(strip=True).split(":")[1]
-        
+        episodes = (
+            soup.find("span", string="Episodes:")
+            .find_parent()
+            .get_text(strip=True)
+            .split(":")[1]
+        )
+        studio = (
+            soup.find("span", string="Studios:")
+            .find_parent()
+            .get_text(strip=True)
+            .split(":")[1]
+        )
+        source = (
+            soup.find("span", string="Source:")
+            .find_parent()
+            .get_text(strip=True)
+            .split(":")[1]
+        )
+
         # Dependiendo del anime puede tener un solo genero o varios asi que controlamos si es uno o varios
         try:
-            genres = soup.find("span", string="Genre:").find_parent().get_text(strip=True, separator=" ").split(":")[1].split(" ")[1]
+            genres = (
+                soup.find("span", string="Genre:")
+                .find_parent()
+                .get_text(strip=True, separator=" ")
+                .split(":")[1]
+                .split(" ")[1]
+            )
         except Exception as e:
-            genres = soup.find("span", string="Genres:").find_parent().get_text(strip=True, separator=" ").split(":")[1].split(",")
-            
+            genres = (
+                soup.find("span", string="Genres:")
+                .find_parent()
+                .get_text(strip=True, separator=" ")
+                .split(":")[1]
+                .split(",")
+            )
+
             # Recorremos los generos y eliminamos los espacios
             for i in range(len(genres)):
                 genres[i] = genres[i].split(" ")[1]
-        
+
         # Controlamos si no hay tema
         try:
-            theme = soup.find("span", string="Theme:").find_parent().get_text(strip=True, separator="-").split(":")[1].split("-")[1]
+            theme = (
+                soup.find("span", string="Theme:")
+                .find_parent()
+                .get_text(strip=True, separator="-")
+                .split(":")[1]
+                .split("-")[1]
+            )
         except Exception as e:
             theme = None
-        demographic = soup.find("span", string="Demographic:").find_parent().get_text(strip=True, separator=" ").split(":")[1].split(" ")[1]
+        demographic = (
+            soup.find("span", string="Demographic:")
+            .find_parent()
+            .get_text(strip=True, separator=" ")
+            .split(":")[1]
+            .split(" ")[1]
+        )
 
         # Obtendremos los personajes principales y sus actores de voz
         characters = []

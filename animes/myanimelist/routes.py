@@ -1,6 +1,7 @@
 # Importamos el router de la API
 from fastapi import APIRouter
 from animes.myanimelist.myanimelist_api import MyAnimeListAPI
+from animes.myanimelist.models.myanimelist import AnimeTopResponse
 
 # Instanciamos un router
 router = APIRouter()
@@ -25,7 +26,7 @@ router.add_api_route(
     methods=["GET"],
     description="See the top animes on MyAnimeList.",
     name="Top animes",
-    
+    response_model=AnimeTopResponse
 )
 
 # Endpoint para ver los animes de temporada
