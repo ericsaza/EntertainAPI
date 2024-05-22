@@ -31,7 +31,8 @@ class AnimeDirectorio(BaseModel):
 class AnimeRelacion(BaseModel):
     title: str
     type: str
-    url: str
+    animeflv_info: str
+    url_api: str
 
 # Clase que representa un anime buscado
 class AnimeBuscado(BaseModel):
@@ -42,6 +43,7 @@ class AnimeBuscado(BaseModel):
     type: str
     genres: List[str]
     relations: List[AnimeRelacion]
+    animeflv_info: str
     score: str
     
 # Clase que representa la respuesta de los episodios recientes

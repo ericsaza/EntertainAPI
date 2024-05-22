@@ -136,6 +136,7 @@ class AnimeflvAPI:
             sinopsis = soup.find("div", {"class": "Description"}).find("p").text
             image = f'https://www3.animeflv.net{soup.find("div", {"class": "Image"}).find("img")["src"]}'
             tipo_anime = soup.find("span", {"class": "Type tv"}).text
+            animeflv_info = f'https://www3.animeflv.net/anime/{anime_a_buscar}'
             
             # Ahora obtendremos los generos del anime
             generos = []
@@ -159,11 +160,12 @@ class AnimeflvAPI:
                     titulo_relacionado = relacionado.find("a").text
                     tipo = relacionado.text.split("(")[1].replace(")", "").strip()
                     url_relacionado = relacionado.find("a")["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
-                    relacionados.append({"title": titulo_relacionado, "type": tipo, "url": url_relacionado})
+                    animeflv_info_relacionado = f'https://www3.animeflv.net{relacionado.find("a")["href"]}'
+                    relacionados.append({"title": titulo_relacionado, "type": tipo, "animeflv_info": animeflv_info_relacionado, "url_api": url_relacionado})
             except:
                 relacionados = []
             
             return {"message": "Endpoint para ver la info de un anime en específico", 
-                    "data": {"title": titulo, "image_src": image, "alternative_names": nombres_alternativos, "sinopsis": sinopsis, "type": tipo_anime, "genres": generos, "relations": relacionados, "score": rating}, "code": 200}
+                    "data": {"title": titulo, "image_src": image, "alternative_names": nombres_alternativos, "sinopsis": sinopsis, "type": tipo_anime, "genres": generos, "relations": relacionados, "animeflv_info": animeflv_info, "score": rating}, "code": 200}
         else:
             return {"message": "Anime no encontrado.", "type": "Validation error.", "code": 422}
