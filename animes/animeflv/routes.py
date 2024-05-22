@@ -1,7 +1,7 @@
 # Importamos el router de la API
 from fastapi import APIRouter
 from animes.animeflv.animeflv_api import AnimeflvAPI
-from animes.animeflv.models.animeflv import EpisodiosRecientesResponse, UltimosAnimesResponse, DirectorioAnimesResponse, VerInfoAnimeAnimeResponse
+from animes.animeflv.models.animeflv import EpisodiosRecientesResponse, UltimosAnimesResponse, DirectorioAnimesResponse, BuscadorAnimeResponse, VerInfoAnimeAnimeResponse
 
 # Instanciamos un router
 router = APIRouter()
@@ -56,6 +56,7 @@ router.add_api_route(
     methods=["GET"],
     description="Buscar un anime por su nombre en AnimeFLV.",
     name="Buscar anime",
+    response_model=BuscadorAnimeResponse,
 )
 
 # Endpoint para ver la información de un anime por su nombre

@@ -65,6 +65,13 @@ class DirectorioAnimesResponse(BaseModel):
     data: List[AnimeDirectorio]
     code: int = 200
 
+# Clase que representa la respuesta de la búsqueda de un anime
+class BuscadorAnimeResponse(BaseModel):
+    message: str
+    data: List[AnimeDirectorio]
+    code: int = 200
+
+# Clase que representa la respuesta de la información de un anime
 class VerInfoAnimeAnimeResponse(BaseModel):
     message: str
     data: AnimeBuscado
