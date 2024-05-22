@@ -85,8 +85,8 @@ class MyAnimeListAPI:
                 .split(" ")[1]
                 .replace("(", "")
             )
-            airing_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[3]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[4]}'
-            finalization_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
+            start_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[3]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[4]}'
+            end_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
             type = (
                 anime.find("div", {"class": "information"})
                 .get_text(strip=True, separator=" ")
@@ -106,16 +106,16 @@ class MyAnimeListAPI:
                     "image_src": image_src,
                     "num_episodes": num_episodes,
                     "dates": {
-                        "airing_date": airing_date,
-                        "finalization_date": (
+                        "start_date": start_date,
+                        "end_date": (
                             None
-                            if "members" in finalization_date
-                            else finalization_date
+                            if "members" in end_date
+                            else end_date
                         ),
                     },  # Controlo que si lo que recibe no es una fecha de null
                     "type": type,
-                    "url_mal": url_myanimelist,
                     "score": score,
+                    "url_mal": url_myanimelist,
                 }
             )
 
@@ -168,24 +168,140 @@ class MyAnimeListAPI:
         new = soup.find_all("div", {"class": "seasonal-anime-list"})[index]
         animes = []
         for anime in new.find_all("div", {"class": "seasonal-anime"}):
-            myanimelist_id = anime.find("h2", {"class": "h2_anime_title"}).find("a")["href"].split("/")[4]
+            myanimelist_id = (
+                anime.find("h2", {"class": "h2_anime_title"})
+                .find("a")["href"]
+                .split("/")[4]
+            )
             title = anime.find("h2", {"class": "h2_anime_title"}).find("a").text
-            image_src = anime.find("div", {"class": "image"}).find("img").get('src')
-            myanimelist_url = anime.find("h2", {"class": "h2_anime_title"}).find("a")["href"]
+            image_src = anime.find("div", {"class": "image"}).find("img").get("src")
+            myanimelist_url = anime.find("h2", {"class": "h2_anime_title"}).find("a")[
+                "href"
+            ]
             score = anime.find("div", {"class": "score"}).get_text(strip=True)
             sinposis = anime.find("p", {"class": "preline"}).get_text(strip=True)
-            studio = anime.find_all("div", {"class": "property"})[0].find("span", {"class", "item"}).text
-            source = anime.find_all("div", {"class": "property"})[1].find("span", {"class", "item"}).text
-            
+            studio = (
+                anime.find_all("div", {"class": "property"})[0]
+                .find("span", {"class", "item"})
+                .text
+            )
+            source = (
+                anime.find_all("div", {"class": "property"})[1]
+                .find("span", {"class", "item"})
+                .text
+            )
+
             # Añadimos los géneros
             genres = []
             for genre in anime.find_all("span", {"class": "genre"}):
                 genres.append(genre.get_text(strip=True))
 
-            animes.append({"mal_id": myanimelist_id, "title": title, "image_src": image_src, "sinopsis": sinposis, "genres": genres, "studio": studio, "source": source, "url_mal": myanimelist_url, "score": score})
+            animes.append(
+                {
+                    "mal_id": myanimelist_id,
+                    "title": title,
+                    "image_src": image_src,
+                    "sinopsis": sinposis,
+                    "genres": genres,
+                    "studio": studio,
+                    "source": source,
+                    "score": score,
+                    "url_mal": myanimelist_url,
+                }
+            )
 
         return {
             "message": f"Animes of the season {season.value} of {year}",
             "data": animes,
+            "code": 200,
+        }
+
+    # Endpoint para buscar un anime por su nombre
+    def buscar_anime(
+        self,
+        anime_name: str = Query(
+            ...,
+            example="Blue lock",
+            description="Name of the anime you want to search.",
+        ),
+        page: int = Query(
+            ..., example=1, description="Number of the page you want to see."
+        ),
+    ):
+        # Entramos a la página donde scrapearemos la información
+        soup = obtener_contenido_url(
+            f"https://myanimelist.net/anime.php?cat=anime&q={anime_name}&show={50 * (page - 1)}&ey=0&c%5B%5D=a&c%5B%5D=b&c%5B%5D=c&c%5B%5D=d&c%5B%5D=e&c%5B%5D=g"
+        )
+
+        lista_animes = []
+        # Recorreremos todos los 'tr' menos el primero que es el header
+        for anime in soup.find(
+            "div", {"class": "js-categories-seasonal js-block-list list"}
+        ).find_all("tr")[1:]:
+            title = anime.find("strong").get_text(strip=True)
+            image_src = anime.find("img")["data-src"]
+            sinonpsis = (
+                anime.find("div", {"class": "pt4"})
+                .get_text(strip=True)
+                .replace("read more.", "")
+            )
+            type = anime.find_all(
+                "td",
+            )[
+                2
+            ].get_text(strip=True)
+            episodes = anime.find_all(
+                "td",
+            )[
+                3
+            ].get_text(strip=True)
+            rating = anime.find_all(
+                "td",
+            )[
+                4
+            ].get_text(strip=True)
+            start_date = anime.find_all(
+                "td",
+            )[
+                5
+            ].get_text(strip=True)
+            end_date = anime.find_all(
+                "td",
+            )[
+                6
+            ].get_text(strip=True)
+            myanimelist_url = anime.find("a")["href"]
+
+            lista_animes.append(
+                {
+                    "title": title,
+                    "image_src": image_src,
+                    "sinopsis": sinonpsis,
+                    "type": type,
+                    "num_episodes": episodes,
+                    "dates": {
+                        "start_date": start_date,
+                        "end_date": end_date,
+                    },
+                    "rating": rating,
+                    "url_mal": myanimelist_url,
+                }
+            )
+
+        return {
+            "message": f"Animes found with the name {anime_name}",
+            "data": lista_animes,
+            "pagination": [
+                {
+                    "prev_page": (
+                        f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page - 1}"
+                        if page > 1
+                        else None
+                    )
+                },
+                {
+                    "next_page": f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page + 1}"
+                },
+            ],
             "code": 200,
         }
