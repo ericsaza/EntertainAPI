@@ -13,8 +13,9 @@ class PrincipalAPI:
                     "AnimeFLV": {
                         "episodios_recientes": "/api/anime/animeflv/episodios-recientes",
                         "ultimos_animes": "/api/anime/animeflv/ultimos-animes",
-                        "directorio_animes": "/api/anime/animeflv/directorio-animes",
+                        "directorio_animes": "/api/anime/animeflv/directorio-animes?pagina=1",
                         "buscar_anime": "/api/anime/animeflv/buscar-anime?anime_a_buscar=sword%20art%20online",
+                        "ver_info_anime": "/api/anime/animeflv/info-anime?anime_a_buscar=sword%20art%20online",
                     },
                     "MyAnimeList": {
                         "top_animes": "/api/anime/myanimelist/top-animes?pagina=1&top=all"
