@@ -33,8 +33,8 @@ class AnimeflvAPI:
             "endpoints": { 
                         "episodios_recientes": "/api/anime/animeflv/episodios-recientes",
                         "ultimos_animes": "/api/anime/animeflv/ultimos-animes",
-                        "directorio_animes": "/api/anime/animeflv/directorio-animes",
-                        "buscar_anime": "/api/anime/animeflv/buscar-anime?anime_a_buscar=sword%20art%20online",
+                        "directorio_animes": "/api/anime/animeflv/directorio-animes?pagina=1",
+                        "ver_info_anime": "/api/anime/animeflv/info-anime?anime_a_buscar=sword%20art%20online",
                     },
             "other_anime_endpoints": {
                 "MyAnimeList": "/api/anime/myanimelist",
@@ -103,22 +103,42 @@ class AnimeflvAPI:
             image = anime.find("img")["src"]
             sinopsis = anime.find_all("p")[1].text
             anime_type = anime.find("span", {"class": "Type"}).text
+            animeflv_info = f'https://www3.animeflv.net{anime.find("a")["href"]}'
             url_api = anime.find("a")["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
             rating = anime.find("span", {"class": "Vts fa-star"}).text
 
             # Agregamos los datos a la lista
-            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "score": rating, "url_api": url_api})
+            lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": animeflv_info, "url_api": url_api})
         
         return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}], "code": 200}
 
+    # Endpoint para buscar un anime en específico por su nombre
+    def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime que quieres buscar.", example="shokugeki no souma")):
+        
+        # Hacemos cambios necesarios para la búsqueda
+        soup = obtener_contenido_url(f"https://www3.animeflv.net/browse?q={anime_a_buscar.replace(' ', '+')}")
+        
+        # Buscamos los animes encontrados y los guardamos en una lista
+        animes_encontrados = []
+        for anime in soup.find("ul", {"class": "ListAnimes"}).find_all("li"):
+            titulo = anime.find("h3").text
+            image_src = anime.find("img")["src"]
+            sinopsis = anime.find_all("p")[1].text
+            anime_type = anime.find("span", {"class": "Type"}).text
+            url_api = anime.find("a")["href"].replace("/anime/", "/api/anime/animeflv/info-anime?anime_a_buscar=")
+            rating = anime.find("span", {"class": "Vts fa-star"}).text
+            animeflv_info = f'https://www3.animeflv.net{anime.find_all("a")[1]["href"]}'
+
+            # Agregamos los datos a la lista
+            animes_encontrados.append({"title": titulo, "image_src": image_src, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": animeflv_info, "url_api": url_api})
+        
+        return {"message": "Endpoint para buscar un anime en específico por su nombre", "data": animes_encontrados, "code": 200}
+
     # Endpoint para ver la info de un anime en específico
-    def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime a buscar.", example="sword art online")):
+    def ver_info_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime que quieres ver su información.", example="sword art online")):
         
         # Hacemos cambios necesarios para la búsqueda
         anime_a_buscar = anime_a_buscar.replace(" ", "-").lower().replace(",", "").replace(":", "").replace("!", "").replace("(", "").replace(")", "").replace("?", "").replace("¿", "").replace("¡", "").replace("@", "")
-        
-        # Imprimimos el anime a buscar
-        print(anime_a_buscar)
         
         # Entramos a la página donde scrapearemos la información
         url = f"https://www3.animeflv.net/anime/{anime_a_buscar}"
@@ -135,7 +155,7 @@ class AnimeflvAPI:
             rating = soup.find("span", {"class": "vtprmd"}).text
             sinopsis = soup.find("div", {"class": "Description"}).find("p").text
             image = f'https://www3.animeflv.net{soup.find("div", {"class": "Image"}).find("img")["src"]}'
-            tipo_anime = soup.find("span", {"class": "Type tv"}).text
+            tipo_anime = soup.find("span", {"class": "Type"}).text
             animeflv_info = f'https://www3.animeflv.net/anime/{anime_a_buscar}'
             
             # Ahora obtendremos los generos del anime

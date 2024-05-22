@@ -13,10 +13,10 @@ class AnimeAnadido(BaseModel):
     title: str
     image_src: str
     sinopsis: str
-    animeflv_info: str
     type: str
     score: str
-    url: str
+    animeflv_info: str
+    url_api: str
     
 # Clase que representa un anime del directorio de animes
 class AnimeDirectorio(BaseModel):
@@ -25,6 +25,7 @@ class AnimeDirectorio(BaseModel):
     sinopsis: str
     type: str
     score: str
+    animeflv_info: str
     url_api: str
 
 # Clase que representa una relación de un anime
@@ -64,7 +65,7 @@ class DirectorioAnimesResponse(BaseModel):
     data: List[AnimeDirectorio]
     code: int = 200
 
-class BuscadorAnimeResponse(BaseModel):
+class VerInfoAnimeAnimeResponse(BaseModel):
     message: str
     data: AnimeBuscado
     code: int = 200
