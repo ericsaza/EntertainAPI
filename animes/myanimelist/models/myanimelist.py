@@ -29,7 +29,19 @@ class SeasonalAnime(BaseModel):
     synopsis: str
     score: float | None
     url_mal: str
-    url_api: str 
+    url_api: str
+    
+# Clase que representa un anime buscado en MyAnimeList
+class BuscadorAnime(BaseModel):
+    mal_id: int
+    title: str
+    image_src: str
+    type: str
+    synopsis: str
+    dates: Dates
+    score: float | None
+    url_mal: str
+    url_api: str
 
 # Clase que representa la respuesta del top de MyAnimeList
 class AnimeTopResponse(BaseModel):
@@ -41,4 +53,10 @@ class AnimeTopResponse(BaseModel):
 class SeasonalAnimesResponse(BaseModel):
     message: str
     data: List[SeasonalAnime]
+    code: int = 200
+    
+# Clase que representa la respuesta de la búsqueda de un anime en MyAnimeList
+class BuscadorAnimeResponse(BaseModel):
+    message: str
+    data: List[BuscadorAnime]
     code: int = 200

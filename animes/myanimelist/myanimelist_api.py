@@ -170,10 +170,12 @@ class MyAnimeListAPI:
             myanimelist_url = anime.find("h2", {"class": "h2_anime_title"}).find("a")[
                 "href"
             ]
-            
-            # Controlamos si no hay score 
+
+            # Controlamos si no hay score
             try:
-                score = float(anime.find("div", {"class": "score"}).get_text(strip=True))
+                score = float(
+                    anime.find("div", {"class": "score"}).get_text(strip=True)
+                )
             except Exception as e:
                 score = None
             synopsis = anime.find("p", {"class": "preline"}).get_text(strip=True)
@@ -236,6 +238,7 @@ class MyAnimeListAPI:
         for anime in soup.find(
             "div", {"class": "js-categories-seasonal js-block-list list"}
         ).find_all("tr")[1:]:
+            myanimelist_id = anime.find("a")["href"].split("/")[4]
             title = anime.find("strong").get_text(strip=True)
             image_src = anime.find("img")["data-src"]
             synopsis = (
@@ -248,16 +251,16 @@ class MyAnimeListAPI:
             )[
                 2
             ].get_text(strip=True)
-            episodes = anime.find_all(
-                "td",
-            )[
-                3
-            ].get_text(strip=True)
-            rating = anime.find_all(
-                "td",
-            )[
-                4
-            ].get_text(strip=True)
+            try:
+                rating = float(
+                    anime.find_all(
+                        "td",
+                    )[
+                        4
+                    ].get_text(strip=True)
+                )
+            except Exception as e:
+                rating = None
             start_date = anime.find_all(
                 "td",
             )[
@@ -272,17 +275,18 @@ class MyAnimeListAPI:
 
             lista_animes.append(
                 {
+                    "mal_id": myanimelist_id,
                     "title": title,
                     "image_src": image_src,
                     "type": type,
-                    "num_episodes": episodes,
                     "synopsis": synopsis,
                     "dates": {
                         "start_date": start_date,
                         "end_date": end_date,
                     },
-                    "rating": rating,
+                    "score": rating,
                     "url_mal": myanimelist_url,
+                    "url_api": f"/api/anime/myanimelist/anime-info?myanimelist_id={myanimelist_id}&anime_name={title}",
                 }
             )
 
@@ -399,23 +403,28 @@ class MyAnimeListAPI:
         # Obtendremos los personajes principales y sus actores de voz
         characters = []
         for character in range(10):
-            character_name = (
-                soup.find_all("h3", {"class": "h3_characters_voice_actors"})[character]
-                .find("a")
-                .text
-            )
-            voice_actor = (
-                soup.find_all("td", {"class": "va-t ar pl4 pr4"})[len(characters)]
-                .find("a")
-                .text
-            )
+            try:
+                character_name = (
+                    soup.find_all("h3", {"class": "h3_characters_voice_actors"})[
+                        character
+                    ]
+                    .find("a")
+                    .text
+                )
+                voice_actor = (
+                    soup.find_all("td", {"class": "va-t ar pl4 pr4"})[len(characters)]
+                    .find("a")
+                    .text
+                )
 
-            characters.append(
-                {
-                    "character_name": character_name,
-                    "voice_actor": voice_actor,
-                }
-            )
+                characters.append(
+                    {
+                        "character_name": character_name,
+                        "voice_actor": voice_actor,
+                    }
+                )
+            except Exception as e:
+                break
 
         # Añadimos al staff
         staff = []
