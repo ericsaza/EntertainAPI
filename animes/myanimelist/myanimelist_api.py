@@ -170,7 +170,12 @@ class MyAnimeListAPI:
             myanimelist_url = anime.find("h2", {"class": "h2_anime_title"}).find("a")[
                 "href"
             ]
-            score = anime.find("div", {"class": "score"}).get_text(strip=True)
+            
+            # Controlamos si no hay score 
+            try:
+                score = float(anime.find("div", {"class": "score"}).get_text(strip=True))
+            except Exception as e:
+                score = None
             synopsis = anime.find("p", {"class": "preline"}).get_text(strip=True)
             studio = (
                 anime.find_all("div", {"class": "property"})[0]
@@ -190,7 +195,7 @@ class MyAnimeListAPI:
 
             animes.append(
                 {
-                    "mal_id": myanimelist_id,
+                    "mal_id": int(myanimelist_id),
                     "title": title,
                     "image_src": image_src,
                     "genres": genres,
@@ -199,6 +204,7 @@ class MyAnimeListAPI:
                     "synopsis": synopsis,
                     "score": score,
                     "url_mal": myanimelist_url,
+                    "url_api": f"/api/anime/myanimelist/anime-info?myanimelist_id={myanimelist_id}&anime_name={title}",
                 }
             )
 
