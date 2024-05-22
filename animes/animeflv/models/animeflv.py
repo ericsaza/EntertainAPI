@@ -37,7 +37,7 @@ class AnimeRelacion(BaseModel):
 class AnimeBuscado(BaseModel):
     title: str
     image_src: str
-    alternative_titles: List[str]
+    alternative_names: List[str]
     sinopsis: str
     type: str
     genres: List[str]
@@ -59,5 +59,10 @@ class UltimosAnimesResponse(BaseModel):
 # Clase que representa la respuesta del directorio de animes
 class DirectorioAnimesResponse(BaseModel):
     message: str
-    data: List[AnimeBuscado]
+    data: List[AnimeDirectorio]
+    code: int = 200
+
+class BuscadorAnimeResponse(BaseModel):
+    message: str
+    data: AnimeBuscado
     code: int = 200
