@@ -111,7 +111,7 @@ class AnimeflvAPI:
             # Agregamos los datos a la lista
             lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": animeflv_info, "url_api": url_api})
         
-        return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}], "code": 200}
+        return {"message": "Directorio de animes", "data": lista_animes, "pagination": {"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None, "next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}, "code": 200}
 
     # Endpoint para buscar un anime en específico por su nombre
     def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime que quieres buscar.", example="shokugeki no souma")):

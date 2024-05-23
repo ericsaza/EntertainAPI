@@ -21,7 +21,7 @@ class PrincipalAPI:
                     "MyAnimeList": {
                         "info": "/api/anime/myanimelist",
                         "top_animes": "/api/anime/myanimelist/top-animes?page=1&top=all",
-                        "seasonal_animes": "/api/anime/myanimelist/seasonal-animes?year=2024&season=spring&type=new",
+                        "seasonal_animes": "/api/anime/myanimelist/seasonal-animes?year=2024&season=spring&anime_type=new",
                         "search_anime": "/api/anime/myanimelist/search-anime?anime_name=Blue lock&page=1",
                         "anime_info": "/api/anime/myanimelist/anime-info?myanimelist_id=21&anime_name=One Piece",
                     },

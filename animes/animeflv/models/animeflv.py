@@ -4,17 +4,17 @@ from pydantic import BaseModel
 # Clase que representa un episodio
 class Episodio(BaseModel):
     title: str
-    episode: str
+    episode: int
     image_src: str
     url: str
-    
+
 # Clase que representa uno de los últimos animes añadidos
 class AnimeAnadido(BaseModel):
     title: str
     image_src: str
     sinopsis: str
     type: str
-    score: str
+    score: float
     animeflv_info: str
     url_api: str
     
@@ -24,7 +24,7 @@ class AnimeDirectorio(BaseModel):
     image_src: str
     sinopsis: str
     type: str
-    score: str
+    score: float
     animeflv_info: str
     url_api: str
 
@@ -45,7 +45,12 @@ class AnimeBuscado(BaseModel):
     genres: List[str]
     relations: List[AnimeRelacion]
     animeflv_info: str
-    score: str
+    score: float
+    
+# Clase que representa la paginación
+class Pagination(BaseModel):
+    prev_page: str | None
+    next_page: str | None
     
 # Clase que representa la respuesta de los episodios recientes
 class EpisodiosRecientesResponse(BaseModel):
@@ -63,6 +68,7 @@ class UltimosAnimesResponse(BaseModel):
 class DirectorioAnimesResponse(BaseModel):
     message: str
     data: List[AnimeDirectorio]
+    pagination: Pagination
     code: int = 200
 
 # Clase que representa la respuesta de la búsqueda de un anime

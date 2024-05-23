@@ -69,6 +69,11 @@ class AnimeInfo(BaseModel):
     characters: List[Character]
     staff: List[Staff]
     score: float | None
+    
+# Clase que representa la paginación
+class Pagination(BaseModel):
+    prev_page: str | None
+    next_page: str | None
 
 # Clase que representa la respuesta del top de MyAnimeList
 class AnimeTopResponse(BaseModel):
@@ -86,6 +91,7 @@ class SeasonalAnimesResponse(BaseModel):
 class BuscadorAnimeResponse(BaseModel):
     message: str
     data: List[BuscadorAnime]
+    pagination: Pagination
     code: int = 200
     
 # Clase que representa la respuesta de la información de un anime en MyAnimeList

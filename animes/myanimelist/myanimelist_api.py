@@ -41,7 +41,7 @@ class MyAnimeListAPI:
             "description": "This endpoint will show you MyAnimeList API information, including available endpoints, API documentation, and response code.",
             "endpoints": {
                 "top_animes": "/api/anime/myanimelist/top-animes?page=1&top=all",
-                "seasonal_animes": "/api/anime/myanimelist/seasonal-animes?year=2024&season=spring&type=new",
+                "seasonal_animes": "/api/anime/myanimelist/seasonal-animes?year=2024&season=spring&anime_type=new",
                 "search_anime": "/api/anime/myanimelist/search-anime?anime_name=Blue lock&page=1",
                 "anime_info": "/api/anime/myanimelist/anime-info?myanimelist_id=21&anime_name=One Piece",
             },
@@ -105,8 +105,8 @@ class MyAnimeListAPI:
             # Agregamos los datos a la lista
             lista_animes.append(
                 {
-                    "position": int(position),
-                    "mal_id": int(myanimelist_id),
+                    "position": position,
+                    "mal_id": myanimelist_id,
                     "title": title,
                     "image_src": image_src,
                     "dates": {
@@ -114,7 +114,7 @@ class MyAnimeListAPI:
                         "end_date": (None if "members" in end_date else end_date),
                     },  # Controlo que si lo que recibe no es una fecha de null
                     "type": type,
-                    "score": float(score),
+                    "score": score,
                     "url_mal": url_myanimelist,
                     "url_api": url_api,
                 }
@@ -206,7 +206,7 @@ class MyAnimeListAPI:
 
             animes.append(
                 {
-                    "mal_id": int(myanimelist_id),
+                    "mal_id": myanimelist_id,
                     "title": title,
                     "image_src": image_src,
                     "genres": genres,
@@ -302,18 +302,16 @@ class MyAnimeListAPI:
         return {
             "message": f"Endpoints to search anime by name",
             "data": lista_animes,
-            "pagination": [
+            "pagination": 
                 {
                     "prev_page": (
                         f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page - 1}"
                         if page > 1
                         else None
                     )
-                },
-                {
+                ,
                     "next_page": f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page + 1}"
                 },
-            ],
             "code": 200,
         }
 
