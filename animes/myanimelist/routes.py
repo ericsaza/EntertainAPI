@@ -1,7 +1,7 @@
 # Importamos el router de la API
 from fastapi import APIRouter
 from animes.myanimelist.myanimelist_api import MyAnimeListAPI
-from animes.myanimelist.models.myanimelist import AnimeTopResponse, SeasonalAnimesResponse, BuscadorAnimeResponse
+from animes.myanimelist.models.myanimelist import AnimeTopResponse, SeasonalAnimesResponse, BuscadorAnimeResponse, AnimeInfoResponse
 
 # Instanciamos un router
 router = APIRouter()
@@ -56,4 +56,5 @@ router.add_api_route(
     methods=["GET"],
     description="View information about an anime on MyAnimeList.",
     name="Anime info",
+    response_model=AnimeInfoResponse,
 )

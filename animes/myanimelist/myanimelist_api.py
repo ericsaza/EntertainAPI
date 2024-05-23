@@ -322,30 +322,47 @@ class MyAnimeListAPI:
         )
 
         # Obtenemos la información del anime
-        rank = (
+        # Controlamos si no hay rank
+        try:
+            rank = int(
             soup.find("span", {"class": "numbers ranked"})
             .find("strong")
             .get_text(strip=True)
             .replace("#", "")
         )
-        popularity_rank = (
+        except Exception as e:
+            rank = None
+            
+        
+        # Controlamos si no hay popularity rank
+        try:
+            popularity_rank = int(
             soup.find("span", {"class": "numbers popularity"})
             .find("strong")
             .get_text(strip=True)
             .replace("#", "")
         )
+        except Exception as e:
+            popularity_rank = None
+        
+        
         title = soup.find("h1", {"class": "title-name"}).text
         image_src = soup.find("div", {"class": "leftside"}).find("img")["data-src"]
         synopsis = soup.find("p", {"itemprop": "description"}).text
-        score = soup.find("div", {"class": "score-label"}).text
         video_promo = soup.find("div", {"class": "video-promotion"}).find("a")["href"]
         type = soup.find("h2", string="Information").find_next("div").find("a").text
-        episodes = (
+        
+        # Controlamos si no hay episodios
+        try:
+            episodes = int(
             soup.find("span", string="Episodes:")
             .find_parent()
             .get_text(strip=True)
             .split(":")[1]
         )
+        except Exception as e:
+            episodes = None
+            
         studio = (
             soup.find("span", string="Studios:")
             .find_parent()
@@ -359,6 +376,12 @@ class MyAnimeListAPI:
             .split(":")[1]
         )
 
+        # Controlamos si no hay score
+        try:
+            score = float(soup.find("div", {"class": "score-label"}).text)
+        except Exception as e:
+            score = None
+            
         # Dependiendo del anime puede tener un solo genero o varios asi que controlamos si es uno o varios
         try:
             genres = (
