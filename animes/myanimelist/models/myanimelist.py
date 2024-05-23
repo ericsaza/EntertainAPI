@@ -4,7 +4,7 @@ from pydantic import BaseModel
 # Clase que representa las fechas de inicio y fin de un anime del top de MyAnimeList
 class Dates(BaseModel):
     start_date: str
-    end_date: str
+    end_date: str | None
 
 # Clase que representa un anime del top de MyAnimeList
 class AnimeTop(BaseModel):
@@ -63,7 +63,7 @@ class AnimeInfo(BaseModel):
     studio: str
     source: str
     genres: List[str] | str | None
-    theme: str
+    theme: str | None
     demographic: str
     synopsis: str
     characters: List[Character]

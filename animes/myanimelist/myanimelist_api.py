@@ -40,7 +40,10 @@ class MyAnimeListAPI:
             "message": "Endpoint to view MyAnimeList API information.",
             "description": "This endpoint will show you MyAnimeList API information, including available endpoints, API documentation, and response code.",
             "endpoints": {
-                "top_animes": "/api/anime/myanimelist/top-animes?page=1&top=all"
+                "top_animes": "/api/anime/myanimelist/top-animes?page=1&top=all",
+                "seasonal_animes": "/api/anime/myanimelist/seasonal-animes?year=2024&season=spring&type=new",
+                "search_anime": "/api/anime/myanimelist/search-anime?anime_name=Blue lock&page=1",
+                "anime_info": "/api/anime/myanimelist/anime-info?myanimelist_id=21&anime_name=One Piece",
             },
             "other_anime_endpoints": {
                 "AnimeFLV": "/api/anime/animeflv",
@@ -81,7 +84,13 @@ class MyAnimeListAPI:
             image_src = anime.find("img")["data-src"]
 
             start_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[3]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[4]}'
-            end_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
+            
+            # Controlamos si no hay fecha de finalización
+            try:
+                end_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
+            except Exception as e:
+                end_date = None
+            
             type = (
                 anime.find("div", {"class": "information"})
                 .get_text(strip=True, separator=" ")
