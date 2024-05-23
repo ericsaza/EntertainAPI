@@ -29,7 +29,8 @@ class PrincipalAPI:
                 "mangas": {},
                 "peliculas": {
                     "info": "/api/peliculas/decine-21",
-                    },
+                    "calendario_estrenos": "/api/peliculas/decine-21/calendario-estrenos?ano=2024&mes=enero",
+                },
             },
             "documentation": {"swagger": "/docs", "doc": "/redoc"},
             "code": 200,
