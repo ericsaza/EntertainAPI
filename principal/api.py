@@ -11,13 +11,15 @@ class PrincipalAPI:
             "endpoints": {
                 "animes": {
                     "AnimeFLV": {
+                        "info": "/api/anime/animeflv",
                         "episodios_recientes": "/api/anime/animeflv/episodios-recientes",
                         "ultimos_animes": "/api/anime/animeflv/ultimos-animes",
                         "directorio_animes": "/api/anime/animeflv/directorio-animes?pagina=1",
                         "buscar_anime": "/api/anime/animeflv/buscar-anime?anime_a_buscar=sword%20art%20online",
                         "ver_info_anime": "/api/anime/animeflv/info-anime?anime_a_buscar=sword%20art%20online",
                     },
-                    "endpoints": {
+                    "MyAnimeList": {
+                        "info": "/api/anime/myanimelist",
                         "top_animes": "/api/anime/myanimelist/top-animes?page=1&top=all",
                         "seasonal_animes": "/api/anime/myanimelist/seasonal-animes?year=2024&season=spring&type=new",
                         "search_anime": "/api/anime/myanimelist/search-anime?anime_name=Blue lock&page=1",
@@ -25,7 +27,9 @@ class PrincipalAPI:
                     },
                 },
                 "mangas": {},
-                "peliculas": {},
+                "peliculas": {
+                    "info": "/api/peliculas/decine-21",
+                    },
             },
             "documentation": {"swagger": "/docs", "doc": "/redoc"},
             "code": 200,
