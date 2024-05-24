@@ -2,6 +2,7 @@ from enum import Enum
 from fastapi import Query
 from utils.scrap_utils import *
 
+# Enum para los meses
 class EnumMeses(str, Enum):
     enero = "enero"
     febrero = "febrero"
@@ -15,6 +16,19 @@ class EnumMeses(str, Enum):
     octubre = "octubre"
     noviembre = "noviembre"
     diciembre = "diciembre"
+    
+# Enum para las distintas plataformas de streaming
+class EnumPlataformas(str, Enum):
+    netflix = "netflix"
+    apple_tv = "apple tv"
+    hbo_max = "hbo max"
+    amazon = "amazon prime video"
+    movistar = "movistar+"
+    disney = "disney+"
+    filmin = "filmin"
+    flixole = "flixolé"
+    acontra = "acontra+"
+    sky_showtime = "skyshowtime"
 
 class Decine21API:
     
@@ -105,5 +119,75 @@ class Decine21API:
         return {
             "message": "Endpoint para ver el calendario de estrenos de Decine21.",
             "data": dias,
+            "code": 200,
+        }
+        
+    # Endpoint para ver lo último en streaming de distintas plataformas
+    def lo_ultimo_en_streaming(self, plataforma: EnumPlataformas = Query(..., example=EnumPlataformas.netflix, description="Plataforma de streaming a buscar.")):
+        
+        # Dependiendo de la plataforma se busca una URL u otra
+        plataforma_url = ""
+        
+        if plataforma == EnumPlataformas.netflix:
+            plataforma_url = "netflix"
+        elif plataforma == EnumPlataformas.apple_tv:
+            plataforma_url = "apple-tv"
+        elif plataforma == EnumPlataformas.hbo_max:
+            plataforma_url = "hbo"
+        elif plataforma == EnumPlataformas.amazon:
+            plataforma_url = "amazon-prime-video"
+        elif plataforma == EnumPlataformas.movistar:
+            plataforma_url = "movistar"
+        elif plataforma == EnumPlataformas.disney:
+            plataforma_url = "disney-plus"
+        elif plataforma == EnumPlataformas.filmin:
+            plataforma_url = "filmin"
+        elif plataforma == EnumPlataformas.flixole:
+            plataforma_url = "flixole"
+        elif plataforma == EnumPlataformas.acontra:
+            plataforma_url = "acontra"
+        elif plataforma == EnumPlataformas.sky_showtime:
+            plataforma_url = "skyshowtime"
+            
+        # Obtenemos el contenido de la URL
+        soup = obtener_contenido_url(f"https://decine21.com/streaming/{plataforma_url}")
+        
+        # Obtenemos las películas
+        peliculas = []
+        
+        for pelicula in guardar_varios_elementos_por_tag_y_atributo(soup, "div", "class", "caratula mostrar col-6 col-md-6 col-lg-3"):
+            
+            # Obtenemos los datos de la película
+            title = guardar_elemento_por_tag_y_atributo(pelicula, "a", "class", "mod-articles-category-title link-unstyled").find("span").get_text(strip=True)
+            image_url = guardar_elemento_por_tag_y_atributo(pelicula, "img", "class", "img-fluid shadow")["src"]
+            decine_url = obtener_atributo_elemento_buscado_por_tag_y_atributo(pelicula, "a", "class", "mod-articles-category-title link-unstyled", "href")
+            decine_id = decine_url.split("-")[-1]
+            
+            # Controlamos si la película tiene fecha de estreno
+            try:
+                fecha_estreno_plataforma = guardar_elemento_por_tag_y_atributo(pelicula, "span", "class", "mod-articles-category-date").get_text(strip=True)
+            except:
+                fecha_estreno_plataforma = None
+                
+            # Controlamos si la película tiene trailer
+            try:
+                trailer_url = f'https://decine21.com{guardar_elemento_por_tag_y_atributo(pelicula, "div", "class", "tab-item-trailer").find("a").get("href")}'
+            except:
+                trailer_url = None
+            
+            # Añadimos la película a la lista
+            peliculas.append({
+                "decine_id": decine_id,
+                "title": title,
+                "image_url": image_url,
+                "release_platform_date": fecha_estreno_plataforma,
+                "url_trailer": trailer_url,
+                "url_decine": f'https://decine21.com{decine_url}'
+            })
+            
+
+        return {
+            "message": "Endpoint para ver lo último en streaming de Decine21.",
+            "data": peliculas,
             "code": 200,
         }
