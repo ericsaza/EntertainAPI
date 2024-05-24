@@ -85,9 +85,11 @@ class Decine21API:
                 duracion = obtener_texto_elemento_buscado_por_tag_y_atributo(pelicula, "span", "class", "d-none d-lg-inline-block").split(" ")[1]
                 sinopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(pelicula, "div", "class", "list-film-sinopsis")
                 url_decine = guardar_elemento_por_tag_y_atributo(pelicula, "h3", "class", "h5").find("a")["href"]
+                decine_id = url_decine.split("-")[-1]
                 
                 # Añadimos la película a la lista
                 peliculas.append({
+                    "decine_id": decine_id,
                     "title": title,
                     "release_year": ano_estr,
                     "duration_min": duracion,

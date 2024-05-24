@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 # Clase que representa las peliculas de cada dia del calendario de Decine21
 class Pelicula(BaseModel):
+    decine_id: int
     title: str
     release_year: int
     duration_min: int
