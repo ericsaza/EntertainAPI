@@ -72,13 +72,13 @@ class AnimeflvAPI:
         # Buscamos todos los animes recientes
         lista_animes = []
         for anime in soup.find("ul", {"class": "ListAnimes"}).find_all("li"):
-            titulo = anime.find("h3").text
-            image = f'https://www3.animeflv.net{anime.find("img")["src"]}'
-            sinopsis = anime.find_all("p")[1].text
+            titulo = obtener_texto_elemento_buscado_por_tag(anime, "h3")
+            image = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(anime, "img", "src")}'
+            sinopsis = guardar_varios_elementos_por_tag(anime, "p")[1].text
             info_anime = f'https://www3.animeflv.net{anime.find_all("a")[1]["href"]}'
-            anime_type = anime.find("span", {"class": "Type"}).text
-            url_api = anime.find_all("a")[1]["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
-            rating = anime.find("span", {"class": "Vts fa-star"}).text
+            anime_type = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Type")
+            url_api = guardar_varios_elementos_por_tag(anime, "a")[1]["href"].replace("/anime/", "/api/anime/animeflv/info-anime?anime_a_buscar=")
+            rating = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Vts fa-star")
             
             # Agregamos los datos a la lista
             lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": info_anime, "url_api": url_api})
