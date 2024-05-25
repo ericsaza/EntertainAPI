@@ -71,7 +71,7 @@ class AnimeflvAPI:
         
         # Buscamos todos los animes recientes
         lista_animes = []
-        for anime in soup.find("ul", {"class": "ListAnimes"}).find_all("li"):
+        for anime in guardar_varios_elementos_por_tag_y_atributo(soup, "ul", "class", "ListAnimes").find_all("li"):
             titulo = obtener_texto_elemento_buscado_por_tag(anime, "h3")
             image = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(anime, "img", "src")}'
             sinopsis = guardar_varios_elementos_por_tag(anime, "p")[1].text
@@ -99,19 +99,19 @@ class AnimeflvAPI:
         lista_animes = []
         
         # Recorremos los animes
-        for anime in soup.find("ul", {"class": "ListAnimes"}).find_all("li"):
-            titulo = anime.find("h3").text
-            image = anime.find("img")["src"]
-            sinopsis = anime.find_all("p")[1].text
-            anime_type = anime.find("span", {"class": "Type"}).text
+        for anime in guardar_elemento_por_tag_y_atributo(soup, "ul", "class", "ListAnimes").find_all("li"):
+            titulo = obtener_texto_elemento_buscado_por_tag(anime, "h3")
+            image = obtener_atributo_elemento_buscado_por_tag(anime, "img", "src")
+            sinopsis = guardar_varios_elementos_por_tag(anime, "p")[1].text
+            anime_type = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Type")
             animeflv_info = f'https://www3.animeflv.net{anime.find("a")["href"]}'
-            url_api = anime.find("a")["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
-            rating = anime.find("span", {"class": "Vts fa-star"}).text
+            url_api = obtener_atributo_elemento_buscado_por_tag(anime, "a", "href").replace("/anime/", "/api/anime/animeflv/info-anime?anime_a_buscar=")
+            rating = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Vts fa-star")
 
             # Agregamos los datos a la lista
             lista_animes.append({"title": titulo, "image_src": image, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": animeflv_info, "url_api": url_api})
         
-        return {"message": "Directorio de animes", "data": lista_animes, "pagination": [{"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None}, {"next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}], "code": 200}
+        return {"message": "Directorio de animes", "data": lista_animes, "pagination": {"prev_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina - 1}" if pagina > 1 else None, "next_page": f"/api/anime/animeflv/directorio-animes?pagina={pagina + 1}"}, "code": 200}
 
     # Endpoint para buscar un anime en específico por su nombre
     def buscar_anime(self, anime_a_buscar: str = Query(..., description="Nombre del anime que quieres buscar.", example="shokugeki no souma")):
@@ -121,14 +121,14 @@ class AnimeflvAPI:
         
         # Buscamos los animes encontrados y los guardamos en una lista
         animes_encontrados = []
-        for anime in soup.find("ul", {"class": "ListAnimes"}).find_all("li"):
-            titulo = anime.find("h3").text
-            image_src = anime.find("img")["src"]
-            sinopsis = anime.find_all("p")[1].text
-            anime_type = anime.find("span", {"class": "Type"}).text
-            url_api = anime.find("a")["href"].replace("/anime/", "/api/anime/animeflv/info-anime?anime_a_buscar=")
-            rating = anime.find("span", {"class": "Vts fa-star"}).text
-            animeflv_info = f'https://www3.animeflv.net{anime.find_all("a")[1]["href"]}'
+        for anime in guardar_elemento_por_tag_y_atributo(soup, "ul", "class", "ListAnimes").find_all("li"):
+            titulo = obtener_texto_elemento_buscado_por_tag(anime, "h3")
+            image_src = obtener_atributo_elemento_buscado_por_tag(anime, "img", "src")
+            sinopsis = guardar_varios_elementos_por_tag(anime, "p")[1].text
+            anime_type = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Type")
+            url_api = obtener_atributo_elemento_buscado_por_tag(anime, "a", "href").replace("/anime/", "/api/anime/animeflv/info-anime?anime_a_buscar=")
+            rating = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Vts fa-star")
+            animeflv_info = f'https://www3.animeflv.net{guardar_varios_elementos_por_tag(anime, "a")[1]["href"]}'
 
             # Agregamos los datos a la lista
             animes_encontrados.append({"title": titulo, "image_src": image_src, "sinopsis": sinopsis, "type": anime_type, "score": rating, "animeflv_info": animeflv_info, "url_api": url_api})
@@ -152,22 +152,22 @@ class AnimeflvAPI:
             soup = BeautifulSoup(response.content, "lxml")
             
             # Buscamos la información del anime
-            titulo = soup.find("h1", {"class": "Title"}).text
-            rating = soup.find("span", {"class": "vtprmd"}).text
-            sinopsis = soup.find("div", {"class": "Description"}).find("p").text
-            image = f'https://www3.animeflv.net{soup.find("div", {"class": "Image"}).find("img")["src"]}'
-            tipo_anime = soup.find("span", {"class": "Type"}).text
+            titulo = obtener_texto_elemento_buscado_por_tag_y_atributo(soup, "h1", "class", "Title")
+            rating = obtener_texto_elemento_buscado_por_tag_y_atributo(soup, "span", "class", "vtprmd")
+            sinopsis = guardar_elemento_por_tag_y_atributo(soup, "div", "class", "Description").find("p").text
+            image = f'https://www3.animeflv.net{guardar_elemento_por_tag_y_atributo(soup, "div", "class", "Image").find("img")["src"]}'
+            tipo_anime = obtener_texto_elemento_buscado_por_tag_y_atributo(soup, "span", "class", "Type")
             animeflv_info = f'https://www3.animeflv.net/anime/{anime_a_buscar}'
             
             # Ahora obtendremos los generos del anime
             generos = []
-            for genero in soup.find("nav", {"class": "Nvgnrs"}).find_all("a"):
+            for genero in guardar_elemento_por_tag_y_atributo(soup, "nav", "class", "Nvgnrs").find_all("a"):
                 generos.append(genero.text)
             
             # Obtendremos los nombres alternativos del anime
             nombres_alternativos = []
             try:
-                html_nombres_alternativos = soup.find("span", {"class": "TxtAlt"})
+                html_nombres_alternativos = guardar_elemento_por_tag_y_atributo(soup, "span", "class", "TxtAlt").text.split(",")
                 for nombre in html_nombres_alternativos:
                     nombres_alternativos.append(nombre.strip() if nombre else None)
             except:
@@ -175,13 +175,13 @@ class AnimeflvAPI:
                 
             # Ahora obtendremos la lista de relacionados del anime
             relacionados = []
-            html_relacionados = soup.find("ul", {"class": "ListAnmRel"})
+            html_relacionados = guardar_elemento_por_tag_y_atributo(soup, "ul", "class", "ListAnmRel")
             try:
-                for relacionado in html_relacionados.find_all("li"):
-                    titulo_relacionado = relacionado.find("a").text
+                for relacionado in guardar_varios_elementos_por_tag(html_relacionados, "li"):
+                    titulo_relacionado = obtener_texto_elemento_buscado_por_tag(relacionado, "a")
                     tipo = relacionado.text.split("(")[1].replace(")", "").strip()
-                    url_relacionado = relacionado.find("a")["href"].replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=")
-                    animeflv_info_relacionado = f'https://www3.animeflv.net{relacionado.find("a")["href"]}'
+                    url_relacionado = obtener_atributo_elemento_buscado_por_tag_y_atributo(relacionado, "a", "href").replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=") 
+                    animeflv_info_relacionado = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(relacionado, "a", "href")}'
                     relacionados.append({"title": titulo_relacionado, "type": tipo, "animeflv_info": animeflv_info_relacionado, "url_api": url_relacionado})
             except:
                 relacionados = []
