@@ -32,4 +32,5 @@ class CalendarioEstrenosResponse(BaseModel):
 class UltimasPeliculasStreamingPlataformaResponse(BaseModel):
     message: str
     data: List[PeliculaStreaming]
+    other_platforms: dict[str, str]
     code: int = 200

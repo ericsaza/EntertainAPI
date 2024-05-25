@@ -2,7 +2,7 @@ from enum import Enum
 from bs4 import BeautifulSoup
 from fastapi import Query
 import requests
-from utils.scrap_utils import obtener_contenido_url
+from utils.scrap_utils import *
 
 # Enum de tipos de animes
 class TipoAnime(str, Enum):
@@ -53,10 +53,10 @@ class AnimeflvAPI:
         # Buscamos todos los episodios recientes
         lista_animes = []
         for anime in soup.find("ul", {"class": "ListEpisodios"}).find_all("li"):
-            titulo = anime.find("strong").text
-            episodio = anime.find("span", {"class": "Capi"}).text.split(" ")[1]
-            url = f'https://www3.animeflv.net{anime.find("a")["href"]}'
-            image = f'https://www3.animeflv.net{anime.find("img")["src"]}'
+            titulo = obtener_texto_elemento_buscado_por_tag(anime, "strong")
+            episodio = obtener_texto_elemento_buscado_por_tag_y_atributo(anime, "span", "class", "Capi").split(" ")[1]
+            url = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(anime, "a", "href")}'
+            image = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(anime, "img", "src")}'
 
             # Agregamos los datos a la lista
             lista_animes.append({"title": titulo, "episode": episodio, "image_src": image, "url": url})

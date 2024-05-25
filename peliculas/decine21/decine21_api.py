@@ -41,6 +41,7 @@ class Decine21API:
             },
             "other_film_endpoints": {
                 "calendario_estrenos": "/api/peliculas/decine-21/calendario-estrenos?ano=2024&mes=enero",
+                "ultimo_streaming": "/api/peliculas/decine-21/ultimo-streaming?plataforma=netflix",
             },
             "documentation": {"swagger": "/docs", "doc": "/redoc"},
             "code": 200,
@@ -189,5 +190,17 @@ class Decine21API:
         return {
             "message": "Endpoint para ver lo último en streaming de Decine21.",
             "data": peliculas,
+            "other_platforms": {
+                "netflix": "/api/peliculas/decine-21/ultimo-streaming?plataforma=netflix",
+                "apple_tv": "/api/peliculas/decine-21/ultimo-streaming?plataforma=apple tv",
+                "hbo_max": "/api/peliculas/decine-21/ultimo-streaming?plataforma=hbo max",
+                "amazon": "/api/peliculas/decine-21/ultimo-streaming?plataforma=amazon prime video",
+                "movistar": "/api/peliculas/decine-21/ultimo-streaming?plataforma=movistar%2B",
+                "disney": "/api/peliculas/decine-21/ultimo-streaming?plataforma=disney%2B",
+                "filmin": "/api/peliculas/decine-21/ultimo-streaming?plataforma=filmin",
+                "flixole": "/api/peliculas/decine-21/ultimo-streaming?plataforma=flixol%C3%A9",
+                "acontra": "/api/peliculas/decine-21/ultimo-streaming?plataforma=acontra%2B",
+                "sky_showtime": "/api/peliculas/decine-21/ultimo-streaming?plataforma=skyshowtime",
+            },
             "code": 200,
         }
