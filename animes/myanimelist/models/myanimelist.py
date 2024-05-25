@@ -64,7 +64,7 @@ class AnimeInfo(BaseModel):
     source: str
     genres: List[str] | str | None
     theme: str | None
-    demographic: str
+    demographic: str | None
     synopsis: str
     characters: List[Character]
     staff: List[Staff]

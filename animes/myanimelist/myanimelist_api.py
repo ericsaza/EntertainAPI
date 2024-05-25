@@ -1,6 +1,6 @@
 from enum import Enum
 from fastapi import Query
-from utils.scrap_utils import obtener_contenido_url
+from utils.scrap_utils import *
 
 
 # Enum de tipos de tops
@@ -69,37 +69,62 @@ class MyAnimeListAPI:
 
         # Buscamos la información de los animes
         lista_animes = []
-        for anime in soup.find_all("tr", {"class": "ranking-list"}):
-            position = anime.find("td", {"class": "rank"}).find("span").text
+        for anime in guardar_varios_elementos_por_tag_y_atributo(
+            soup, "tr", "class", "ranking-list"
+        ):
+            position = (
+                guardar_elemento_por_tag_y_atributo(anime, "td", "class", "rank")
+                .find("span")
+                .text
+            )
             myanimelist_id = (
-                anime.find("h3", {"class": "fl-l fs14 fw-b anime_ranking_h3"})
+                guardar_elemento_por_tag_y_atributo(
+                    anime, "h3", "class", "fl-l fs14 fw-b anime_ranking_h3"
+                )
                 .find("a")["href"]
                 .split("/")[4]
             )
+
+            # Controlamos si no hay titulo
             title = (
-                anime.find("h3", {"class": "fl-l fs14 fw-b anime_ranking_h3"})
+                guardar_elemento_por_tag_y_atributo(
+                    anime, "h3", "class", "fl-l fs14 fw-b anime_ranking_h3"
+                )
                 .find("a")
                 .text
             )
-            image_src = anime.find("img")["data-src"]
 
-            start_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[3]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[4]}'
-            
+            image_src = obtener_atributo_elemento_buscado_por_tag(
+                anime, "img", "data-src"
+            )
+
+            start_date = f'{guardar_elemento_por_tag_y_atributo(anime, "div", "class", "information").get_text(strip=True, separator=" ").split(" ")[3]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[4]}'
+
             # Controlamos si no hay fecha de finalización
             try:
-                end_date = f'{anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
+                end_date = f'{guardar_elemento_por_tag_y_atributo(anime, "div", "class", "information").get_text(strip=True, separator=" ").split(" ")[6]} {anime.find("div", {"class": "information"}).get_text(strip=True, separator=" ").split(" ")[7]}'
             except Exception as e:
                 end_date = None
-            
+
+            # Obtenemos el tipo de anime
             type = (
-                anime.find("div", {"class": "information"})
+                guardar_varios_elementos_por_tag_y_atributo(
+                    anime, "div", "class", "information"
+                )[0]
                 .get_text(strip=True, separator=" ")
                 .split(" ")[0]
             )
-            url_myanimelist = anime.find(
-                "h3", {"class": "fl-l fs14 fw-b anime_ranking_h3"}
+
+            # Obtenemos la url de MyAnimeList
+            url_myanimelist = guardar_elemento_por_tag_y_atributo(
+                anime, "h3", "class", "fl-l fs14 fw-b anime_ranking_h3"
             ).find("a")["href"]
-            score = anime.find("td", {"class": "score"}).find("span").text
+
+            score = (
+                guardar_elemento_por_tag_y_atributo(anime, "td", "class", "score")
+                .find("span")
+                .text
+            )
             url_api = f"/api/anime/myanimelist/anime-info?myanimelist_id={myanimelist_id}&anime_name={title}"
 
             # Agregamos los datos a la lista
@@ -120,6 +145,7 @@ class MyAnimeListAPI:
                 }
             )
 
+        # Devolvemos la información
         return {
             "message": "Emdpoint to see top 50 animes on MyAnimeList.",
             "data": lista_animes,
@@ -166,42 +192,68 @@ class MyAnimeListAPI:
 
         # Obtenemos la información de los animes de temporada
         # empeza por new
-        new = soup.find_all("div", {"class": "seasonal-anime-list"})[index]
+        new = guardar_varios_elementos_por_tag_y_atributo(
+            soup, "div", "class", "seasonal-anime-list"
+        )[index]
         animes = []
-        for anime in new.find_all("div", {"class": "seasonal-anime"}):
+        for anime in guardar_varios_elementos_por_tag_y_atributo(
+            new, "div", "class", "seasonal-anime"
+        ):
             myanimelist_id = (
-                anime.find("h2", {"class": "h2_anime_title"})
+                guardar_elemento_por_tag_y_atributo(
+                    anime, "h2", "class", "h2_anime_title"
+                )
                 .find("a")["href"]
                 .split("/")[4]
             )
-            title = anime.find("h2", {"class": "h2_anime_title"}).find("a").text
-            image_src = anime.find("div", {"class": "image"}).find("img").get("src")
-            myanimelist_url = anime.find("h2", {"class": "h2_anime_title"}).find("a")[
-                "href"
-            ]
+
+            # Obtenemos la información de los animes
+            title = (
+                guardar_elemento_por_tag_y_atributo(
+                    anime, "h2", "class", "h2_anime_title"
+                )
+                .find("a")
+                .text
+            )
+            image_src = (
+                guardar_elemento_por_tag_y_atributo(anime, "div", "class", "image")
+                .find("img")
+                .get("src")
+            )
+            myanimelist_url = guardar_elemento_por_tag_y_atributo(
+                anime, "h2", "class", "h2_anime_title"
+            ).find("a")["href"]
 
             # Controlamos si no hay score
             try:
                 score = float(
-                    anime.find("div", {"class": "score"}).get_text(strip=True)
+                    obtener_texto_elemento_buscado_por_tag_y_atributo(
+                        anime, "div", "class", "score"
+                    )
                 )
             except Exception as e:
                 score = None
-            synopsis = anime.find("p", {"class": "preline"}).get_text(strip=True)
+            synopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
+                anime, "p", "class", "preline"
+            )
             studio = (
-                anime.find_all("div", {"class": "property"})[0]
+                guardar_elemento_por_tag_y_atributo(anime, "div", "class", "property")
                 .find("span", {"class", "item"})
                 .text
             )
             source = (
-                anime.find_all("div", {"class": "property"})[1]
+                guardar_varios_elementos_por_tag_y_atributo(
+                    anime, "div", "class", "property"
+                )[1]
                 .find("span", {"class", "item"})
                 .text
             )
 
             # Añadimos los géneros
             genres = []
-            for genre in anime.find_all("span", {"class": "genre"}):
+            for genre in guardar_varios_elementos_por_tag_y_atributo(
+                anime, "span", "class", "genre"
+            ):
                 genres.append(genre.get_text(strip=True))
 
             animes.append(
@@ -244,43 +296,37 @@ class MyAnimeListAPI:
 
         lista_animes = []
         # Recorreremos todos los 'tr' menos el primero que es el header
-        for anime in soup.find(
-            "div", {"class": "js-categories-seasonal js-block-list list"}
+        for anime in guardar_elemento_por_tag_y_atributo(
+            soup, "div", "class", "js-categories-seasonal js-block-list list"
         ).find_all("tr")[1:]:
-            myanimelist_id = anime.find("a")["href"].split("/")[4]
-            title = anime.find("strong").get_text(strip=True)
-            image_src = anime.find("img")["data-src"]
-            synopsis = (
-                anime.find("div", {"class": "pt4"})
-                .get_text(strip=True)
-                .replace("read more.", "")
+            myanimelist_id = obtener_atributo_elemento_buscado_por_tag(
+                anime, "a", "href"
+            ).split("/")[4]
+            title = obtener_texto_elemento_buscado_por_tag(anime, "strong")
+            image_src = obtener_atributo_elemento_buscado_por_tag(
+                anime, "img", "data-src"
             )
-            type = anime.find_all(
-                "td",
-            )[
-                2
-            ].get_text(strip=True)
+            synopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
+                anime, "div", "class", "pt4"
+            ).replace("read more.", "")
+            type = guardar_varios_elementos_por_tag(anime, "td")[2].get_text(strip=True)
             try:
                 rating = float(
-                    anime.find_all(
-                        "td",
-                    )[
-                        4
-                    ].get_text(strip=True)
+                    guardar_varios_elementos_por_tag(anime, "td")[4].get_text(
+                        strip=True
+                    )
                 )
             except Exception as e:
                 rating = None
-            start_date = anime.find_all(
-                "td",
-            )[
-                5
-            ].get_text(strip=True)
-            end_date = anime.find_all(
-                "td",
-            )[
-                6
-            ].get_text(strip=True)
-            myanimelist_url = anime.find("a")["href"]
+            start_date = guardar_varios_elementos_por_tag(anime, "td")[5].get_text(
+                strip=True
+            )
+            end_date = guardar_varios_elementos_por_tag(anime, "td")[6].get_text(
+                strip=True
+            )
+            myanimelist_url = obtener_atributo_elemento_buscado_por_tag(
+                anime, "a", "href"
+            )
 
             lista_animes.append(
                 {
@@ -302,16 +348,14 @@ class MyAnimeListAPI:
         return {
             "message": f"Endpoints to search anime by name",
             "data": lista_animes,
-            "pagination": 
-                {
-                    "prev_page": (
-                        f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page - 1}"
-                        if page > 1
-                        else None
-                    )
-                ,
-                    "next_page": f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page + 1}"
-                },
+            "pagination": {
+                "prev_page": (
+                    f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page - 1}"
+                    if page > 1
+                    else None
+                ),
+                "next_page": f"/api/anime/myanimelist/search-anime?anime_name={anime_name}&page={page + 1}",
+            },
             "code": 200,
         }
 
@@ -332,52 +376,67 @@ class MyAnimeListAPI:
         # Controlamos si no hay rank
         try:
             rank = int(
-            soup.find("span", {"class": "numbers ranked"})
-            .find("strong")
-            .get_text(strip=True)
-            .replace("#", "")
-        )
+                guardar_elemento_por_tag_y_atributo(
+                    soup, "span", "class", "numbers ranked"
+                )
+                .find("strong")
+                .get_text(strip=True)
+                .replace("#", "")
+            )
         except Exception as e:
             rank = None
-            
-        
+
         # Controlamos si no hay popularity rank
         try:
             popularity_rank = int(
-            soup.find("span", {"class": "numbers popularity"})
-            .find("strong")
-            .get_text(strip=True)
-            .replace("#", "")
-        )
+                guardar_elemento_por_tag_y_atributo(
+                    soup, "span", "class", "numbers popularity"
+                )
+                .find("strong")
+                .get_text(strip=True)
+                .replace("#", "")
+            )
         except Exception as e:
             popularity_rank = None
-        
-        
-        title = soup.find("h1", {"class": "title-name"}).text
-        image_src = soup.find("div", {"class": "leftside"}).find("img")["data-src"]
-        synopsis = soup.find("p", {"itemprop": "description"}).text
-        video_promo = soup.find("div", {"class": "video-promotion"}).find("a")["href"]
-        type = soup.find("h2", string="Information").find_next("div").find("a").text
-        
+
+        title = obtener_texto_elemento_buscado_por_tag_y_atributo(
+            soup, "h1", "class", "title-name"
+        )
+        image_src = guardar_elemento_por_tag_y_atributo(
+            soup, "div", "class", "leftside"
+        ).find("img")["data-src"]
+        synopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
+            soup, "p", "itemprop", "description"
+        )
+        video_promo = guardar_elemento_por_tag_y_atributo(
+            soup, "div", "class", "video-promotion"
+        ).find("a")["href"]
+        type = (
+            guardar_elemento_por_texto(soup, "h2", "Information")
+            .find_next("div")
+            .find("a")
+            .text
+        )
+
         # Controlamos si no hay episodios
         try:
             episodes = int(
-            soup.find("span", string="Episodes:")
-            .find_parent()
-            .get_text(strip=True)
-            .split(":")[1]
-        )
+                guardar_elemento_por_texto(soup, "span", "Episodes:")
+                .find_parent()
+                .get_text(strip=True)
+                .split(":")[1]
+            )
         except Exception as e:
             episodes = None
-            
+
         studio = (
-            soup.find("span", string="Studios:")
+            guardar_elemento_por_texto(soup, "span", "Studios:")
             .find_parent()
             .get_text(strip=True)
             .split(":")[1]
         )
         source = (
-            soup.find("span", string="Source:")
+            guardar_elemento_por_texto(soup, "span", "Source:")
             .find_parent()
             .get_text(strip=True)
             .split(":")[1]
@@ -385,14 +444,18 @@ class MyAnimeListAPI:
 
         # Controlamos si no hay score
         try:
-            score = float(soup.find("div", {"class": "score-label"}).text)
+            score = float(
+                obtener_texto_elemento_buscado_por_tag_y_atributo(
+                    soup, "div", "class", "score-label"
+                )
+            )
         except Exception as e:
             score = None
-            
+
         # Dependiendo del anime puede tener un solo genero o varios asi que controlamos si es uno o varios
         try:
             genres = (
-                soup.find("span", string="Genre:")
+                guardar_elemento_por_texto(soup, "span", "Genre:")
                 .find_parent()
                 .get_text(strip=True, separator=" ")
                 .split(":")[1]
@@ -400,7 +463,7 @@ class MyAnimeListAPI:
             )
         except Exception as e:
             genres = (
-                soup.find("span", string="Genres:")
+                guardar_elemento_por_texto(soup, "span", "Genres:")
                 .find_parent()
                 .get_text(strip=True, separator=" ")
                 .split(":")[1]
@@ -414,39 +477,48 @@ class MyAnimeListAPI:
         # Controlamos si no hay tema
         try:
             theme = (
-                soup.find("span", string="Theme:")
+                guardar_elemento_por_texto(soup, "span", "Theme:")
                 .find_parent()
                 .get_text(strip=True, separator="-")
                 .split(":")[1]
                 .split("-")[1]
             )
+
         except Exception as e:
             theme = None
-        demographic = (
-            soup.find("span", string="Demographic:")
-            .find_parent()
-            .get_text(strip=True, separator=" ")
-            .split(":")[1]
-            .split(" ")[1]
-        )
+
+        # Controlamos si no hay demografico
+        try:
+            demographic = (
+                guardar_elemento_por_texto(soup, "span", "Demographic:")
+                .find_parent()
+                .get_text(strip=True, separator=" ")
+                .split(":")[1]
+                .split(" ")[1]
+            )
+        except Exception as e:
+            demographic = None
 
         # Obtendremos los personajes principales y sus actores de voz
         characters = []
         for character in range(10):
             try:
                 character_name = (
-                    soup.find_all("h3", {"class": "h3_characters_voice_actors"})[
-                        character
-                    ]
+                    guardar_varios_elementos_por_tag_y_atributo(
+                        soup, "td", "class", "va-t ar pl4 pr4"
+                    )[character]
                     .find("a")
                     .text
                 )
                 voice_actor = (
-                    soup.find_all("td", {"class": "va-t ar pl4 pr4"})[len(characters)]
+                    guardar_varios_elementos_por_tag_y_atributo(
+                        soup, "td", "class", "va-t ar pl4 pr4"
+                    )[len(characters)]
                     .find("a")
                     .text
                 )
 
+                # Agregamos los datos a la lista
                 characters.append(
                     {
                         "character_name": character_name,
@@ -458,11 +530,9 @@ class MyAnimeListAPI:
 
         # Añadimos al staff
         staff = []
-        for staff_member in soup.find_all(
-            "div", {"class": "detail-characters-list clearfix"}
-        )[1].find_all("table"):
-            staff_name = staff_member.find_all("a")[1].text
-            staff_role = staff_member.find("small").text
+        for staff_member in guardar_varios_elementos_por_tag_y_atributo(soup, "div", "class", "detail-characters-list clearfix")[1].find_all("table"):
+            staff_name = guardar_varios_elementos_por_tag(staff_member, "a")[1].text
+            staff_role = obtener_texto_elemento_buscado_por_tag(staff_member, "small")
             staff.append({"staff_name": staff_name, "staff_role": staff_role})
 
         return {

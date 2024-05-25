@@ -20,12 +20,18 @@ def guardar_elemento_por_tag(soup, tag: str):
     elemento = soup.find(tag)
     return elemento
 
-
 # Función para guardar un elemento por su tag y clase
 def guardar_elemento_por_tag_y_atributo(soup, tag: str, atributo: str, valor_atributo: str):
     
     # Busca el elemento en el contenido de la página
     elemento = soup.find(tag, {atributo: valor_atributo})
+    return elemento
+
+# Función para guardar un elemento por su texto
+def guardar_elemento_por_texto(soup, tag: str, texto: str):
+    
+    # Busca el elemento en el contenido de la página
+    elemento = soup.find(tag, text=texto)
     return elemento
 
 # Función para guardar varios elementos por su tag
@@ -40,6 +46,14 @@ def guardar_varios_elementos_por_tag_y_atributo(soup, tag: str, atributo: str, v
     
     # Busca los elementos en el contenido de la página
     elementos = soup.find_all(tag, {atributo: valor_atributo})
+    return elementos
+
+
+# Función para guardar varios elementos por su texto
+def guardar_varios_elementos_por_texto(soup, tag: str, texto: str):
+    
+    # Busca los elementos en el contenido de la página
+    elementos = soup.find_all(tag, text=texto)
     return elementos
 
 # Funcion para obtener el texto de un elemento
