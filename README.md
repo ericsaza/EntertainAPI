@@ -22,3 +22,18 @@ EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada pa
    ```sh
    git clone https://github.com/jorgeajimenezl/animeflv-api.git
    ```
+
+2. Navega al directorio del repositorio clonado:
+   ```sh
+   cd EntertainAPI
+   ```
+
+3. Instala las dependencias necesarias:
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+4. Instala el paquete:
+   ```sh
+   pip install .
+   ```
