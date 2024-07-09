@@ -1,5 +1,4 @@
 # EntertainAPI
-<img alt="Header" src="https://asset.brandfetch.io/idrU_daE_7/idrDev-iJd.jpeg">
 <details>
   <summary>Índice</summary>
   <ol>
