@@ -18,13 +18,11 @@
 </details>
 
 ## Descripción general
-
-EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada para ofrecer acceso fácil y rápido a una amplia variedad de datos relacionados con entretenimiento, incluyendo información sobre películas, series, animes, mangas y más. 
+EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada para ofrecer acceso fácil y rápido a una amplia variedad de datos relacionados con entretenimiento, incluyendo información sobre películas, series, animes, mangas y más. Los datos son obtenidos mediante scraping de cada página web utilizando BeautifulSoup.
 
 ## Instalación
 
 1. Clona el repositorio:
-
    ```sh
    git clone https://github.com/jorgeajimenezl/animeflv-api.git
    ```
