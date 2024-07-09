@@ -11,6 +11,9 @@
     <li>
       <a href="#apis">APIs</a>
     </li>
+    <li>
+      <a href="#documentación-api">Documentación API</a>
+    </li>
   </ol>
 </details>
 
@@ -43,8 +46,14 @@ EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada pa
 
 ## APIs
 ### Animes
-- AnimeFLV (ESP): API para obtener información sobre animes en español desde AnimeFLV.
-- MyAnimeList (ENG): API para obtener información sobre animes en inglés desde MyAnimeList.
+- **AnimeFLV (ESP)**: API para obtener información sobre animes en español desde AnimeFLV.
+- **MyAnimeList (ENG)**: API para obtener información sobre animes en inglés desde MyAnimeList.
 
 ### Películas
 - Decine21 (ESP): API para obtener información sobre películas desde Decine21.
+
+
+## Documentación API
+La documentación de EntertainAPI está disponible en dos formatos:
+- **Swagger UI:** Puedes acceder a la documentación interactiva a través del endpoint `/doc`.
+- **ReDoc**: Puedes acceder a la documentación alternativa y detallada a través del endpoint `/redoc`.
