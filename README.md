@@ -8,14 +8,17 @@
     <li>
       <a href="#instalación">Instalación</a>
     </li>
+    <li>
+      <a href="#apis">APIs</a>
+    </li>
   </ol>
 </details>
 
-# Descripción general
+## Descripción general
 
 EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada para ofrecer acceso fácil y rápido a una amplia variedad de datos relacionados con entretenimiento, incluyendo información sobre películas, series, animes, mangas y más. 
 
-# Instalación
+## Instalación
 
 1. Clona el repositorio:
 
@@ -37,3 +40,11 @@ EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada pa
    ```sh
    pip install .
    ```
+
+## APIs
+### Animes
+- AnimeFLV (ESP): API para obtener información sobre animes en español desde AnimeFLV.
+- MyAnimeList (ENG): API para obtener información sobre animes en inglés desde MyAnimeList.
+
+### Películas
+- Decine21 (ESP): API para obtener información sobre películas desde Decine21.
