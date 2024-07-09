@@ -30,6 +30,7 @@ class PrincipalAPI:
                 "peliculas": {
                     "info": "/api/peliculas/decine-21",
                     "calendario_estrenos": "/api/peliculas/decine-21/calendario-estrenos?ano=2024&mes=enero",
+                    "ultimo_streaming": "/api/peliculas/decine-21/ultimo-streaming?plataforma=netflix",
                 },
             },
             "documentation": {"swagger": "/docs", "doc": "/redoc"},
