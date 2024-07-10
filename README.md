@@ -1,59 +1,59 @@
-Español | [Inglés](https://github.com/ericsaza/EntertainAPI/blob/main/README_en.md)
+[Spanish](https://github.com/ericsaza/EntertainAPI/blob/main/README.md) | English
 
 # EntertainAPI
 <details>
-  <summary>Índice</summary>
+  <summary>Index</summary>
   <ol>
     <li>
-      <a href="#descripción-general">Descripción general</a>
+      <a href="#general-description">General Description</a>
     </li>
     <li>
-      <a href="#instalación">Instalación</a>
+      <a href="#installation">Installation</a>
     </li>
     <li>
       <a href="#apis">APIs</a>
     </li>
     <li>
-      <a href="#documentación-api">Documentación API</a>
+      <a href="#api-documentation">API Documentation</a>
     </li>
   </ol>
 </details>
 
-## Descripción general
-EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada para ofrecer acceso fácil y rápido a una amplia variedad de datos relacionados con entretenimiento, incluyendo información sobre películas, series, animes, mangas y más. Los datos son obtenidos mediante scraping de cada página web utilizando BeautifulSoup.
+## General Description
+EntertainAPI is an Application Programming Interface (API) designed to provide easy and quick access to a wide variety of entertainment-related data, including information on movies, series, animes, mangas, and more. The data is obtained by scraping each website using BeautifulSoup.
 
-## Instalación
+## Installation
 
-1. Clona el repositorio:
+1. Clone repository:
    ```sh
    git clone https://github.com/jorgeajimenezl/animeflv-api.git
    ```
 
-2. Navega al directorio del repositorio clonado:
+2. Navigate to the cloned repository directory:
    ```sh
    cd EntertainAPI
    ```
 
-3. Instala las dependencias necesarias:
+3. Install the necessary dependencies:
    ```sh
    pip install -r requirements.txt
    ```
 
-4. Instala el paquete:
+4. Install the package:
    ```sh
    pip install .
    ```
 
 ## APIs
 ### Animes
-- **AnimeFLV (ESP)**: API para obtener información sobre animes en español desde AnimeFLV.
-- **MyAnimeList (ENG)**: API para obtener información sobre animes en inglés desde MyAnimeList.
+- **AnimeFLV (ESP)**: API to get information about animes in Spanish from AnimeFLV.
+- **MyAnimeList (ENG)**: API to get information about animes in English from MyAnimeList.
 
-### Películas
-- Decine21 (ESP): API para obtener información sobre películas desde Decine21.
+### Films
+- **Decine21 (ESP)**: API to get information about movies from Decine21.
 
 
-## Documentación API
-La documentación de EntertainAPI está disponible en dos formatos:
-- **Swagger UI:** Puedes acceder a la documentación interactiva a través del endpoint `/doc`.
-- **ReDoc**: Puedes acceder a la documentación alternativa y detallada a través del endpoint `/redoc`.
+## API Documentation
+The documentation for EntertainAPI is available in two formats:
+- **Swagger UI:** You can access the interactive documentation via the `/doc` endpoint.
+- **ReDoc**: You can access the alternative and detailed documentation via the `/redoc` endpoint.
