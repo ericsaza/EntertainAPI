@@ -1,4 +1,4 @@
-Español | [Inglés](https://github.com/ericsaza/EntertainAPI/blob/main/README_en.md)
+Español | [Inglés](https://github.com/ericsaza/EntertainAPI/blob/main/README.md)
 
 # EntertainAPI
 <details>
