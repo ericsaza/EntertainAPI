@@ -1,3 +1,5 @@
+Español | [Inglés](https://github.com/ericsaza/EntertainAPI/blob/main/README_en.md)
+
 # EntertainAPI
 <details>
   <summary>Índice</summary>
