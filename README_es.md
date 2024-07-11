@@ -56,4 +56,7 @@ EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada pa
 ## Documentación API
 La documentación de EntertainAPI está disponible en dos formatos:
 - **Swagger UI:** Puedes acceder a la documentación interactiva a través del endpoint `/doc`.
+![688shots_so](https://github.com/ericsaza/EntertainAPI/assets/94136968/f2e0d64d-6877-4383-84af-0286caa81619)
+
 - **ReDoc**: Puedes acceder a la documentación alternativa y detallada a través del endpoint `/redoc`.
+![376shots_so](https://github.com/ericsaza/EntertainAPI/assets/94136968/536f8c7f-86f2-45b0-ab61-0f0e4e3a0c30)
