@@ -4,6 +4,7 @@ from principal.routes import router as principal_router
 from animes.animeflv.routes import router as animeflv_router
 from animes.myanimelist.routes import router as myanimelist_router
 from peliculas.decine21.routes import router as decine21_router
+from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
@@ -12,6 +13,14 @@ app = FastAPI(
     title="EntertainAPI",
     description="EntertainAPI es una interfaz de programación de aplicaciones (API) diseñada para ofrecer acceso fácil y rápido a una amplia variedad de datos relacionados con entretenimiento, incluyendo información sobre películas, series, animes, mangas y más. ",
     version="1.0",
+)
+
+app.add_middleware( # Añadimos el middleware para permitir CORS
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Añadimos los routers de la API
