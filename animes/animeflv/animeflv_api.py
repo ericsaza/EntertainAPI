@@ -71,7 +71,7 @@ class AnimeflvAPI:
         
         # Buscamos todos los animes recientes
         lista_animes = []
-        for anime in guardar_varios_elementos_por_tag_y_atributo(soup, "ul", "class", "ListAnimes AX Rows A06 C04 D03").find_all("li"):
+        for anime in guardar_elemento_por_tag_y_atributo(soup, "ul", "class", "ListAnimes AX Rows A06 C04 D03").find_all("li"):
             titulo = obtener_texto_elemento_buscado_por_tag(anime, "h3")
             image = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(anime, "img", "src")}'
             sinopsis = guardar_varios_elementos_por_tag(anime, "p")[1].text
