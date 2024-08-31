@@ -43,7 +43,6 @@ class AnimeBuscado(BaseModel):
     sinopsis: str
     type: str
     genres: List[str]
-    relations: List[AnimeRelacion]
     animeflv_info: str
     score: float
     

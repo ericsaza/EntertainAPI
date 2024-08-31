@@ -173,20 +173,9 @@ class AnimeflvAPI:
             except:
                 nombres_alternativos = []
                 
-            # Ahora obtendremos la lista de relacionados del anime
-            relacionados = []
-            html_relacionados = guardar_elemento_por_tag_y_atributo(soup, "ul", "class", "ListAnmRel")
-            try:
-                for relacionado in guardar_varios_elementos_por_tag(html_relacionados, "li"):
-                    titulo_relacionado = obtener_texto_elemento_buscado_por_tag(relacionado, "a")
-                    tipo = relacionado.text.split("(")[1].replace(")", "").strip()
-                    url_relacionado = obtener_atributo_elemento_buscado_por_tag_y_atributo(relacionado, "a", "href").replace("/anime/", "/api/anime/animeflv/buscar-anime?anime_a_buscar=") 
-                    animeflv_info_relacionado = f'https://www3.animeflv.net{obtener_atributo_elemento_buscado_por_tag(relacionado, "a", "href")}'
-                    relacionados.append({"title": titulo_relacionado, "type": tipo, "animeflv_info": animeflv_info_relacionado, "url_api": url_relacionado})
-            except:
-                relacionados = []
+        
             
             return {"message": "Endpoint para ver la info de un anime en específico", 
-                    "data": {"title": titulo, "image_src": image, "alternative_names": nombres_alternativos, "sinopsis": sinopsis, "type": tipo_anime, "genres": generos, "relations": relacionados, "animeflv_info": animeflv_info, "score": rating}, "code": 200}
+                    "data": {"title": titulo, "image_src": image, "alternative_names": nombres_alternativos, "sinopsis": sinopsis, "type": tipo_anime, "genres": generos, "animeflv_info": animeflv_info, "score": rating}, "code": 200}
         else:
             return {"message": "Anime no encontrado.", "type": "Validation error.", "code": 422}
