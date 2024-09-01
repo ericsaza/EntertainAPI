@@ -108,7 +108,7 @@ class Decine21API:
                     "title": title,
                     "release_year": ano_estr,
                     "duration_min": duracion,
-                    "synopsis": sinopsis,
+                    "sinopsis": sinopsis,
                     "url_decine": f'https://decine21.com/{url_decine}'
                 })
             

@@ -7,7 +7,7 @@ class Pelicula(BaseModel):
     title: str
     release_year: int
     duration_min: int
-    synopsis: str
+    sinopsis: str
     url_decine: str
     
 class PeliculaStreaming(BaseModel):
