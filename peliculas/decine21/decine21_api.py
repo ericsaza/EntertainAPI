@@ -92,6 +92,12 @@ class Decine21API:
             for pelicula in guardar_varios_elementos_por_tag_y_atributo(dia, "div", "class", "list-film"):
                 title = obtener_texto_elemento_buscado_por_tag_y_atributo(pelicula, "h3", "class", "h5")
                 
+                # Obtenemos la imagen de la película
+                try:
+                    image_src = guardar_elemento_por_tag_y_atributo(pelicula, "img", "class", "img-fluid")["src"]
+                except:
+                    image_src = None
+                
                 # Controlamos si el año de estreno está en el título
                 try:
                     ano_estr = guardar_elemento_por_tag_y_atributo(pelicula, "div", "class", "list-film-data d-flex justify-content-between").find("strong").text.replace("(", "").replace(")", "")
@@ -106,6 +112,7 @@ class Decine21API:
                 peliculas.append({
                     "decine_id": decine_id,
                     "title": title,
+                    "image_src": image_src,
                     "release_year": ano_estr,
                     "duration_min": duracion,
                     "sinopsis": sinopsis,

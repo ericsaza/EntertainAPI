@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class Pelicula(BaseModel):
     decine_id: int
     title: str
+    image_src: str
     release_year: int
     duration_min: int
     sinopsis: str
