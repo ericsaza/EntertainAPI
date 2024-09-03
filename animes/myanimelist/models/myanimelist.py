@@ -26,7 +26,7 @@ class SeasonalAnime(BaseModel):
     genres: List[str]
     studio: str
     source: str
-    synopsis: str
+    sinopsis: str
     score: float | None
     url_mal: str
     url_api: str
@@ -37,7 +37,7 @@ class BuscadorAnime(BaseModel):
     title: str
     image_src: str
     type: str
-    synopsis: str
+    sinopsis: str
     dates: Dates
     score: float | None
     url_mal: str
@@ -65,7 +65,7 @@ class AnimeInfo(BaseModel):
     genres: List[str] | str | None
     theme: str | None
     demographic: str | None
-    synopsis: str
+    sinopsis: str
     characters: List[Character]
     staff: List[Staff]
     score: float | None

@@ -233,7 +233,7 @@ class MyAnimeListAPI:
                 )
             except Exception as e:
                 score = None
-            synopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
+            sinopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
                 anime, "p", "class", "preline"
             )
             studio = (
@@ -264,7 +264,7 @@ class MyAnimeListAPI:
                     "genres": genres,
                     "studio": studio,
                     "source": source,
-                    "synopsis": synopsis,
+                    "sinopsis": sinopsis,
                     "score": score,
                     "url_mal": myanimelist_url,
                     "url_api": f"/api/anime/myanimelist/anime-info?myanimelist_id={myanimelist_id}&anime_name={title}",
@@ -306,7 +306,7 @@ class MyAnimeListAPI:
             image_src = obtener_atributo_elemento_buscado_por_tag(
                 anime, "img", "data-src"
             )
-            synopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
+            sinopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
                 anime, "div", "class", "pt4"
             ).replace("read more.", "")
             type = guardar_varios_elementos_por_tag(anime, "td")[2].get_text(strip=True)
@@ -334,7 +334,7 @@ class MyAnimeListAPI:
                     "title": title,
                     "image_src": image_src,
                     "type": type,
-                    "synopsis": synopsis,
+                    "sinopsis": sinopsis,
                     "dates": {
                         "start_date": start_date,
                         "end_date": end_date,
@@ -405,7 +405,7 @@ class MyAnimeListAPI:
         image_src = guardar_elemento_por_tag_y_atributo(
             soup, "div", "class", "leftside"
         ).find("img")["data-src"]
-        synopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
+        sinopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
             soup, "p", "itemprop", "description"
         )
         video_promo = guardar_elemento_por_tag_y_atributo(
@@ -550,7 +550,7 @@ class MyAnimeListAPI:
                 "genres": genres,
                 "theme": theme,
                 "demographic": demographic,
-                "synopsis": synopsis,
+                "sinopsis": sinopsis,
                 "characters": characters,
                 "staff": staff,
                 "score": score,
