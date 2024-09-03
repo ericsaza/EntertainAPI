@@ -213,7 +213,7 @@ class MyAnimeListAPI:
                     anime, "h2", "class", "h2_anime_title"
                 )
                 .find("a")
-                .text
+                .text.replace('"', '')
             )
             image_src = (
                 guardar_elemento_por_tag_y_atributo(anime, "div", "class", "image")
