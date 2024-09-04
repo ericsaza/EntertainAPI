@@ -505,8 +505,8 @@ class MyAnimeListAPI:
             try:
                 character_name = (
                     guardar_varios_elementos_por_tag_y_atributo(
-                        soup, "td", "class", "va-t ar pl4 pr4"
-                    )[character]
+                        soup, "h3", "class", "h3_characters_voice_actors"
+                    )[len(characters)]
                     .find("a")
                     .text
                 )
