@@ -58,7 +58,7 @@ class AnimeInfo(BaseModel):
     title: str
     image_src: str
     num_episodes: int | None
-    video_promotion: str
+    video_promotion: str | None
     type: str
     studio: str
     source: str

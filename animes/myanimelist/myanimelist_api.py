@@ -408,9 +408,13 @@ class MyAnimeListAPI:
         sinopsis = obtener_texto_elemento_buscado_por_tag_y_atributo(
             soup, "p", "itemprop", "description"
         )
-        video_promo = guardar_elemento_por_tag_y_atributo(
-            soup, "div", "class", "video-promotion"
-        ).find("a")["href"]
+        
+        try:
+            video_promo = guardar_elemento_por_tag_y_atributo(
+                soup, "div", "class", "video-promotion"
+            ).find("a")["href"] 
+        except Exception as e:
+            video_promo = None
         type = (
             guardar_elemento_por_texto(soup, "h2", "Information")
             .find_next("div")
